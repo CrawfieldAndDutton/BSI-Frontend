@@ -1,0 +1,199 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 39 50% 18%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 39 50% 18%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 39 50% 18%;
+
+    --primary: 220 14% 30%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 14% 30%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 10% 40%;
+
+    --accent: 220 14% 96%;
+    --accent-foreground: 220 14% 30%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 220 14% 30%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 220 14% 20%;
+    --sidebar-foreground: 220 14% 98%;
+    --sidebar-primary: 220 14% 90%;
+    --sidebar-primary-foreground: 220 14% 20%;
+    --sidebar-accent: 220 14% 25%;
+    --sidebar-accent-foreground: 220 14% 98%;
+    --sidebar-border: 220 14% 25%;
+    --sidebar-ring: 220 14% 90%;
+  }
+
+  .dark {
+    --background: 220 14% 10%;
+    --foreground: 0 0% 98%;
+
+    --card: 220 14% 15%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 220 14% 10%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 220 14% 90%;
+    --primary-foreground: 220 14% 20%;
+
+    --secondary: 220 14% 25%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 220 14% 20%;
+    --muted-foreground: 220 14% 65%;
+
+    --accent: 220 14% 20%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 220 14% 20%;
+    --input: 220 14% 20%;
+    --ring: 220 14% 80%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium tracking-tight;
+  }
+
+  h1 {
+    @apply text-2xl md:text-3xl lg:text-4xl;
+  }
+
+  h2 {
+    @apply text-xl md:text-2xl lg:text-3xl;
+  }
+
+  h3 {
+    @apply text-lg md:text-xl lg:text-2xl;
+  }
+
+  h4 {
+    @apply text-base md:text-lg lg:text-xl;
+  }
+}
+
+@layer components {
+  .bg-dashboard-gradient {
+    background: linear-gradient(to bottom, rgba(245, 245, 245, 0.8), rgba(235, 235, 235, 0.7));
+  }
+  
+  .bg-card-gradient {
+    background: linear-gradient(to bottom, #FFFFFF, #F8F9FA);
+  }
+
+  .bg-gold-gradient {
+    background: linear-gradient(to bottom, #404B5A, #2C3542);
+  }
+
+  .stats-card {
+    @apply bg-white rounded-lg shadow-sm p-5 hover:shadow-md transition-shadow duration-300;
+  }
+
+  .dashboard-card-header {
+    @apply font-medium text-gray-800 border-b border-gray-100 pb-3 mb-4;
+  }
+
+  .table-container {
+    @apply rounded-lg border border-gray-200 overflow-hidden;
+  }
+
+  .table-header {
+    @apply bg-gray-50 text-gray-700 text-sm font-medium;
+  }
+
+  .table-cell {
+    @apply p-3 text-sm border-b border-gray-100;
+  }
+
+  .table-row {
+    @apply hover:bg-gray-50/30 transition-colors;
+  }
+
+  .inr-format::before {
+    content: "₹";
+  }
+
+  .shimmer {
+    @apply relative overflow-hidden bg-gray-100 before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:animate-shimmer;
+  }
+
+  /* New components for improved UI */
+  .smooth-transition {
+    @apply transition-all duration-300 ease-in-out;
+  }
+  
+  .sticky-header {
+    @apply sticky top-0 z-10 bg-background py-4 border-b border-border shadow-sm;
+  }
+  
+  .tab-content {
+    @apply py-6 animate-fade-in;
+  }
+  
+  .expand-section {
+    @apply fixed inset-0 z-20 bg-background p-4 md:p-6 lg:p-8 animate-scale-in overflow-y-auto;
+  }
+}
+
+/* Custom animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slide-in {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out forwards;
+}

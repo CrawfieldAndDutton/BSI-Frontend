@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financial Alert</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; font-size: 16px; line-height: 1.5; color: #404B5A; background-color: #F5F7FA;">
+  <div style="width: 100%; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <!-- Header with Alert Indicator -->
+    <div style="background: linear-gradient(to bottom, #F8CF4D, #F5A623); padding: 20px; border-radius: 8px 8px 0 0; text-align: center;">
+      <h1 style="color: #404B5A; margin: 0; padding: 0; font-size: 24px; font-weight: 500;">Financial Alert</h1>
+    </div>
+    
+    <!-- Main Content -->
+    <div style="background-color: #FFFFFF; padding: 30px; border-left: 1px solid #E5E7EB; border-right: 1px solid #E5E7EB;">
+      <div style="border-radius: 8px; border: 1px solid #FEEFC0; background-color: #FFF8E5; padding: 16px; margin-bottom: 24px;">
+        <h2 style="color: #F5A623; font-size: 18px; margin-top: 0; margin-bottom: 8px;">🔔 {{alert_title}}</h2>
+        <p style="color: #D2831C; margin: 0;">{{alert_description}}</p>
+      </div>
+      
+      <p style="color: #6B7280; margin-bottom: 24px;">Hello {{name}},</p>
+      
+      <p style="color: #6B7280; margin-bottom: 24px;">We've detected an important signal in your financial data that requires your attention.</p>
+      
+      <!-- Details Box -->
+      <div style="background-color: #F8F9FA; border: 1px solid #E5E7EB; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+        <h3 style="color: #404B5A; font-size: 16px; margin-top: 0; margin-bottom: 12px;">Signal Details</h3>
+        
+        <div style="margin-bottom: 8px;">
+          <span style="color: #6B7280; font-weight: 500; display: inline-block; width: 120px;">Date:</span>
+          <span style="color: #404B5A;">{{date}}</span>
+        </div>
+        
+        <div style="margin-bottom: 8px;">
+          <span style="color: #6B7280; font-weight: 500; display: inline-block; width: 120px;">Category:</span>
+          <span style="color: #404B5A;">{{category}}</span>
+        </div>
+        
+        <div style="margin-bottom: 8px;">
+          <span style="color: #6B7280; font-weight: 500; display: inline-block; width: 120px;">Impact:</span>
+          <span style="display: inline-block; padding: 3px 8px; background-color: {{impact_color}}; color: #FFFFFF; border-radius: 12px; font-size: 12px; font-weight: 500;">{{impact_level}}</span>
+        </div>
+      </div>
+      
+      <!-- Action Button -->
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="{{action_url}}" style="display: inline-block; background-color: #404B5A; color: #FFFFFF; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">View Details</a>
+      </div>
+      
+      <p style="color: #6B7280; font-size: 14px;">This is an automated alert. If you need assistance, please contact our support team.</p>
+    </div>
+    
+    <!-- Recommendations -->
+    <div style="background-color: #FFFFFF; padding: 0 30px 30px; border-left: 1px solid #E5E7EB; border-right: 1px solid #E5E7EB;">
+      <h3 style="color: #404B5A; font-size: 16px; margin-bottom: 16px;">Recommended Actions</h3>
+      <ul style="color: #6B7280; padding-left: 20px; margin: 0;">
+        <li style="margin-bottom: 8px;">{{recommendation_1}}</li>
+        <li style="margin-bottom: 8px;">{{recommendation_2}}</li>
+        <li style="margin-bottom: 0;">{{recommendation_3}}</li>
+      </ul>
+    </div>
+    
+    <!-- Footer -->
+    <div style="background-color: #FFFFFF; padding: 20px 30px; border-left: 1px solid #E5E7EB; border-right: 1px solid #E5E7EB; border-bottom: 1px solid #E5E7EB; border-radius: 0 0 8px 8px; text-align: center;">
+      <p style="margin: 0; color: #6B7280; font-size: 14px;">If you believe this alert was sent in error, please <a href="{{contact_url}}" style="color: #404B5A; text-decoration: underline;">contact us</a>.</p>
+    </div>
+    
+    <!-- App Footer -->
+    <div style="padding: 20px; text-align: center;">
+      <p style="color: #6B7280; font-size: 14px; margin: 0 0 8px;">© 2025 Financial Intelligence. All rights reserved.</p>
+      <p style="color: #6B7280; font-size: 12px; margin: 0;">
+        <a href="{{unsubscribe_url}}" style="color: #6B7280; text-decoration: underline;">Unsubscribe</a> | 
+        <a href="{{privacy_url}}" style="color: #6B7280; text-decoration: underline;">Privacy Policy</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

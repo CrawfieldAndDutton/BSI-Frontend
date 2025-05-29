@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financial Intelligence Notification</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; font-size: 16px; line-height: 1.5; color: #404B5A; background-color: #F5F7FA;">
+  <div style="width: 100%; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <!-- Header -->
+    <div style="background: linear-gradient(to bottom, #404B5A, #2C3542); padding: 20px; border-radius: 8px 8px 0 0; text-align: center;">
+      <h1 style="color: #FFFFFF; margin: 0; padding: 0; font-size: 24px; font-weight: 500;">Financial Intelligence</h1>
+    </div>
+    
+    <!-- Main Content -->
+    <div style="background-color: #FFFFFF; padding: 30px; border-left: 1px solid #E5E7EB; border-right: 1px solid #E5E7EB;">
+      <h2 style="color: #404B5A; font-size: 20px; margin-top: 0;">{{subject}}</h2>
+      
+      <p style="color: #6B7280; margin-bottom: 24px;">Hello {{name}},</p>
+      
+      <p style="color: #6B7280; margin-bottom: 24px;">{{message}}</p>
+      
+      <!-- Alert Box -->
+      <div style="background-color: #F8F9FA; border-left: 4px solid #404B5A; padding: 16px; margin-bottom: 24px;">
+        <p style="margin: 0; color: #404B5A; font-weight: 500;">{{alert_title}}</p>
+        <p style="margin: 8px 0 0; color: #6B7280;">{{alert_message}}</p>
+      </div>
+      
+      <!-- Action Button -->
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="{{action_url}}" style="display: inline-block; background-color: #404B5A; color: #FFFFFF; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">{{action_text}}</a>
+      </div>
+      
+      <p style="color: #6B7280; font-size: 14px;">If you have any questions, please contact our support team.</p>
+    </div>
+    
+    <!-- Data Table (if needed) -->
+    <div style="background-color: #FFFFFF; padding: 0 30px 30px; border-left: 1px solid #E5E7EB; border-right: 1px solid #E5E7EB;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+        <thead>
+          <tr>
+            <th style="padding: 10px; text-align: left; border-bottom: 1px solid #E5E7EB; color: #404B5A;">{{table_header_1}}</th>
+            <th style="padding: 10px; text-align: left; border-bottom: 1px solid #E5E7EB; color: #404B5A;">{{table_header_2}}</th>
+            <th style="padding: 10px; text-align: right; border-bottom: 1px solid #E5E7EB; color: #404B5A;">{{table_header_3}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- These rows would be populated by the backend -->
+          <tr>
+            <td style="padding: 10px; text-align: left; border-bottom: 1px solid #E5E7EB; color: #6B7280;">{{row1_cell1}}</td>
+            <td style="padding: 10px; text-align: left; border-bottom: 1px solid #E5E7EB; color: #6B7280;">{{row1_cell2}}</td>
+            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E5E7EB; color: #6B7280;">{{row1_cell3}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; text-align: left; border-bottom: 1px solid #E5E7EB; color: #6B7280;">{{row2_cell1}}</td>
+            <td style="padding: 10px; text-align: left; border-bottom: 1px solid #E5E7EB; color: #6B7280;">{{row2_cell2}}</td>
+            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E5E7EB; color: #6B7280;">{{row2_cell3}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Status Badge -->
+    <div style="background-color: #FFFFFF; padding: 20px 30px; border-left: 1px solid #E5E7EB; border-right: 1px solid #E5E7EB; border-bottom: 1px solid #E5E7EB; border-radius: 0 0 8px 8px;">
+      <div style="display: inline-block; padding: 6px 12px; background-color: {{status_color}}; color: #FFFFFF; border-radius: 16px; font-size: 12px; font-weight: 500;">{{status}}</div>
+    </div>
+    
+    <!-- Footer -->
+    <div style="padding: 20px; text-align: center;">
+      <p style="color: #6B7280; font-size: 14px; margin: 0 0 8px;">© 2025 Financial Intelligence. All rights reserved.</p>
+      <p style="color: #6B7280; font-size: 12px; margin: 0;">
+        <a href="{{unsubscribe_url}}" style="color: #6B7280; text-decoration: underline;">Unsubscribe</a> | 
+        <a href="{{privacy_url}}" style="color: #6B7280; text-decoration: underline;">Privacy Policy</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>
