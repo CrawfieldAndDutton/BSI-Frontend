@@ -3,48 +3,63 @@ import { createSlice } from "@reduxjs/toolkit";
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    token: localStorage.getItem("token") || null,
+    accessToken: localStorage.getItem("accessToken") || null,
     refreshToken: localStorage.getItem("refreshToken") || null,
-    expiresAt: localStorage.getItem("expiresAt") || null,
-    first_name: localStorage.getItem("first_name") || null,
-    last_name: localStorage.getItem("last_name") || null,
+    tokenExpiry: localStorage.getItem("tokenExpiry") || null,
+    tokenType: localStorage.getItem("tokenType") || null,
+   
   },
   reducers: {
-    setToken: (state, action) => {
-      state.token = action.payload;
-      localStorage.setItem("token", action.payload);
+    setAccessToken: (state, action) => {
+      state.accessToken = action.payload;
+      localStorage.setItem("accessToken", action.payload);
     },
     setRefreshToken: (state, action) => {
       state.refreshToken = action.payload;
       localStorage.setItem("refreshToken", action.payload);
     },
-    setExpiresAt: (state, action) => {
-      state.expiresAt = action.payload;
-      localStorage.setItem("expiresAt", action.payload);
+    setTokenExpiry: (state, action) => {
+      state.tokenExpiry = action.payload;
+      localStorage.setItem("tokenExpiry", action.payload);
+    },
+    setTokenType: (state, action) => {
+      state.tokenType = action.payload;
+      localStorage.setItem("tokenType", action.payload);
     },
 
-    setFirstName: (state, action) => {
-      state.first_name = action.payload;
-      localStorage.setItem("first_name", action.payload);
-
-    },
-    setLastName: (state, action) => {
-      state.last_name = action.payload;
-      localStorage.setItem("last_name", action.payload);
-
+    setAuthData: (state, action) => {
+      const { access_token, refresh_token, token_type, expires_at } = action.payload;
+      state.accessToken = access_token;
+      state.refreshToken = refresh_token;
+      state.tokenType = token_type;
+      state.tokenExpiry = expires_at;
+      
+      localStorage.setItem("accessToken", access_token);
+      localStorage.setItem("refreshToken", refresh_token);
+      localStorage.setItem("tokenType", token_type);
+      localStorage.setItem("tokenExpiry", expires_at);
     },
 
     logout: (state) => {
-      state.token = null;
-      localStorage.removeItem("first_name");
-      localStorage.removeItem("last_name");
-      localStorage.removeItem("token");
+      state.accessToken = null;
+      state.refreshToken = null;
+      state.tokenExpiry = null;
+      state.tokenType = null;
+      localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
-      localStorage.removeItem("expiresAt");
+      localStorage.removeItem("tokenType");
+      localStorage.removeItem("tokenExpiry");
     },
   },
 });
 
-export const { setToken, setRefreshToken, setExpiresAt, setFirstName, setLastName, logout } =
-  userSlice.actions;
+export const {
+  setAccessToken,
+  setRefreshToken,
+  setTokenExpiry,
+  setTokenType,
+  setAuthData,
+  logout
+} = userSlice.actions;
+
 export default userSlice.reducer;

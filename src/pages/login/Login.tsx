@@ -12,15 +12,19 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { toast } from "sonner";
+import { authApi } from "@/apis/modules/auth";
+import { useDispatch } from 'react-redux';
+import { setAuthData } from '@/store/userSlice';
 import { generateOTP } from "@/lib/utils";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [showOTPInput, setShowOTPInput] = useState(false);
   const [otp, setOTP] = useState("");
-  const [generatedOTP, setGeneratedOTP] = useState("");
+  
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,20 +36,11 @@ export default function Login() {
     setIsLoading(true);
     
     try {
-      // Simulate API call to send OTP
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      // Generate a random OTP (in a real app, this would be done on the backend)
-      const newOTP = generateOTP();
-      setGeneratedOTP(newOTP);
-      
-      // Show success message with the OTP (in a real app, we wouldn't show this)
-      toast.success(`OTP sent to ${email}. For demo: ${newOTP}`);
-      
-      // Show OTP input field
+      const response = await authApi.sendOtp({ email });
+      toast.success(`OTP sent to ${email}`);
       setShowOTPInput(true);
-    } catch (error) {
-      toast.error("Failed to send OTP. Please try again.");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to send OTP. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -61,23 +56,23 @@ export default function Login() {
     setIsLoading(true);
     
     try {
-      // Simulate API call to verify OTP
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await authApi.verifyOtp({any});
+    
+     if (response.access_token) {
+      // Store all auth data in Redux
+      dispatch(setAuthData(response));
       
-      // Check if OTP matches (in a real app, this would be done on the backend)
-      if (otp === generatedOTP) {
-        toast.success("Login successful!");
-        localStorage.setItem("bankLensAuth", "true");
-        navigate("/dashboard");
-      } else {
-        toast.error("Invalid OTP. Please try again.");
-      }
-    } catch (error) {
-      toast.error("Failed to verify OTP. Please try again.");
-    } finally {
-      setIsLoading(false);
+      toast.success("Login successful!");
+      navigate("/dashboard");
+    } else {
+      toast.error("Invalid OTP. Please try again.");
     }
-  };
+  } catch (error: any) {
+    toast.error(error.message || "Failed to verify OTP. Please try again.");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen w-full flex md:flex-row flex-col bg-background">
