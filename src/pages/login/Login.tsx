@@ -58,10 +58,10 @@ export default function Login() {
     try {
       const response = await authApi.verifyOtp({ username: email, password: otp });
 
-     if (response.access_token) {
+     if (response.data.access_token) {
       // Store all auth data in Redux
-      dispatch(setAuthData(response));
-      
+      dispatch(setAuthData(response.data));
+
       toast.success("Login successful!");
       navigate("/dashboard");
     } else {

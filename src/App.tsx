@@ -29,12 +29,15 @@ import ThankYou from "./pages/bank-statement/ThankYou";
 
 // Credit Report Journey
 import CreditReportConsent from "./pages/credit-report/CreditReportConsent";
+import { Provider } from "react-redux";
+import store from "./store/store";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -74,6 +77,7 @@ const App = () => {
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
+      </Provider>
     </QueryClientProvider>
   );
 };
