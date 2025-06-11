@@ -56,8 +56,8 @@ export default function Login() {
     setIsLoading(true);
     
     try {
-      const response = await authApi.verifyOtp({any});
-    
+      const response = await authApi.verifyOtp({ username: email, password: otp });
+
      if (response.access_token) {
       // Store all auth data in Redux
       dispatch(setAuthData(response));

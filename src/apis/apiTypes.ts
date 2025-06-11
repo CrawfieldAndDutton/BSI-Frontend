@@ -18,6 +18,10 @@ export interface RegisterResponse {
 export interface SendotpPayload{
    email: string;
 }
+export interface VerifyotpPayload{
+   username: string;
+   password: string;
+}
 export interface VerifyotpResponse{
   access_token: string;
   refresh_token: string;
