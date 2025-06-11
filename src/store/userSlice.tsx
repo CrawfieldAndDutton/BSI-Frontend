@@ -7,7 +7,6 @@ const userSlice = createSlice({
     refreshToken: localStorage.getItem("refreshToken") || null,
     tokenExpiry: localStorage.getItem("tokenExpiry") || null,
     tokenType: localStorage.getItem("tokenType") || null,
-   
   },
   reducers: {
     setAccessToken: (state, action) => {
@@ -45,10 +44,8 @@ const userSlice = createSlice({
       state.refreshToken = null;
       state.tokenExpiry = null;
       state.tokenType = null;
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("tokenType");
-      localStorage.removeItem("tokenExpiry");
+      localStorage.clear();
+     
     },
   },
 });

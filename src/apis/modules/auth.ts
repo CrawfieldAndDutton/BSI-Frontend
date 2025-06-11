@@ -9,17 +9,21 @@ import {
 } from "@/apis/apiTypes";
 
 export const authApi = {
-
   register: (data: RegisterPayload) =>
     httpClient.post<RegisterResponse>("/dev/banklens/auth/register/user", data),
 
   logout: (data: LogoutPayload) =>
     httpClient.post<string>("/dev/banklens/auth/logout", data, {
-      headers: { useAuth: true,  },
+      headers: { useAuth: true },
     }),
-  sendOtp: (data: SendotpPayload) =>
-        httpClient.post<string>("/dev/banklens/auth/login/send_otp", data),
+    
+  sendOtp: (email: string) =>
+    httpClient.post<string>(`/dev/banklens/auth/login/send_otp?email=${email}`),
 
-  verifyOtp: (data: VerifyotpPayload) =>
-    httpClient.post<VerifyotpResponse>("/dev/banklens/auth/login/verify_otp", data),
+  verifyOtp: (data: any) =>
+    httpClient.post<any>("/dev/banklens/auth/login/verify_otp", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }),
 };
