@@ -31,6 +31,7 @@ import ThankYou from "./pages/bank-statement/ThankYou";
 import CreditReportConsent from "./pages/credit-report/CreditReportConsent";
 import { Provider } from "react-redux";
 import store from "./store/store";
+import PrivateRoute from "./routes/PrivateRoute";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             
             {/* All routes are now accessible without authentication */}
+            <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
             <Route path="/users" element={<MainLayout><Users /></MainLayout>} />
             <Route path="/customers" element={<MainLayout><Customers /></MainLayout>} />
@@ -74,6 +76,7 @@ const App = () => {
             
             {/* 404 Not Found */}
             <Route path="*" element={<NotFound />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
