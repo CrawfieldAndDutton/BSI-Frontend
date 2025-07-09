@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { settingsApi } from "@/apis/modules/settings";
 import { 
   Card, 
   CardContent, 
@@ -75,21 +76,54 @@ const Settings = () => {
     }
   });
 
-  const onProfileSubmit = (data: any) => {
+  const onProfileSubmit = async (data: any) => {
+  try {
+    const response = await settingsApi.updateProfile({
+      email: data.email,
+      phone_number: data.mobileNumber,
+    });
     toast({
       title: "Profile settings updated",
       description: "Your profile settings have been updated successfully.",
     });
-    console.log("Profile settings:", data);
-  };
+  } catch (error: any) {
+    toast({
+      title: "Failed to update profile",
+      description: error?.response?.data?.detail || "An error occurred.",
+      variant: "destructive",
+    });
+  }
+};
 
-  const onRiskSubmit = (data: any) => {
+  const onRiskSubmit = async (data: any) => {
+  try {
+    // Parse values from form (assuming "0-30" format)
+    const [generalMin, generalMax] = data.generalRiskRange.split("-").map(Number);
+    const [highMin] = data.highRiskScore.split("-").map(Number);
+    const [mediumMin, mediumMax] = data.mediumRiskScore.split("-").map(Number);
+    const [, lowMax] = data.lowRiskScore.split("-").map(Number);
+
+   const response = await settingsApi.updateRiskConfig({
+      general_risk_bucket_min: generalMin,
+      general_risk_bucket_max: generalMax,
+      high_risk_bucket_min: highMin,
+      medium_risk_bucket_min: mediumMin,
+      medium_risk_bucket_max: mediumMax,
+      low_risk_bucket_max: lowMax,
+    });
+
     toast({
       title: "Risk bucket settings updated",
       description: "Risk bucket configurations have been updated successfully.",
     });
-    console.log("Risk settings:", data);
-  };
+  } catch (error: any) {
+    toast({
+      title: "Failed to update risk settings",
+      description: error?.response?.data?.detail || "An error occurred.",
+      variant: "destructive",
+    });
+  }
+};
 
   const onIntegrationSubmit = (data: any) => {
     toast({

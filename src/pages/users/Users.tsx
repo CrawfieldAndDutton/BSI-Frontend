@@ -1,6 +1,8 @@
-
+import { useEffect } from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { authApi } from "@/apis/modules/auth";
+import { roleApi } from "@/apis/modules/role";
 import {
   Dialog,
   DialogContent,
@@ -22,96 +24,173 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Edit, Plus, Trash } from "lucide-react";
 import { StatusBadge } from "@/components/dashboard/StatusBadge";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Sample data - would come from API in real app
-const users = [
-  {
-    id: 1,
-    name: "Vikram Mehta",
-    email: "vikram.mehta@example.com",
-    role: "Admin",
-    status: "Active",
-  },
-  {
-    id: 2,
-    name: "Priya Singh",
-    email: "priya.singh@example.com",
-    role: "Underwriter",
-    status: "Active",
-  },
-  {
-    id: 3,
-    name: "Rahul Kapoor",
-    email: "rahul.kapoor@example.com",
-    role: "Monitor",
-    status: "Active",
-  },
-  {
-    id: 4,
-    name: "Aisha Patel",
-    email: "aisha.patel@example.com",
-    role: "Recovery Agent",
-    status: "Inactive",
-  },
-  {
-    id: 5,
-    name: "Sanjay Kumar",
-    email: "sanjay.kumar@example.com",
-    role: "Underwriter",
-    status: "Active",
-  },
-];
+// const users = [
+//   {
+//     id: 1,
+//     name: "Vikram Mehta",
+//     email: "vikram.mehta@example.com",
+//     role: "Admin",
+//     status: "Active",
+//   },
+//   {
+//     id: 2,
+//     name: "Priya Singh",
+//     email: "priya.singh@example.com",
+//     role: "Underwriter",
+//     status: "Active",
+//   },
+//   {
+//     id: 3,
+//     name: "Rahul Kapoor",
+//     email: "rahul.kapoor@example.com",
+//     role: "Monitor",
+//     status: "Active",
+//   },
+//   {
+//     id: 4,
+//     name: "Aisha Patel",
+//     email: "aisha.patel@example.com",
+//     role: "Recovery Agent",
+//     status: "Inactive",
+//   },
+//   {
+//     id: 5,
+//     name: "Sanjay Kumar",
+//     email: "sanjay.kumar@example.com",
+//     role: "Underwriter",
+//     status: "Active",
+//   },
+// ];
 
-const roles = [
-  {
-    id: 1,
-    name: "Admin",
-    description: "Full system access and user management",
-    permissions: ["Manage Users", "Manage Roles", "System Configuration"],
-  },
-  {
-    id: 2,
-    name: "Underwriter",
-    description: "Can review and decide on loan applications",
-    permissions: ["View Customers", "Approve/Reject Loans", "Generate Reports"],
-  },
-  {
-    id: 3,
-    name: "Monitor",
-    description: "Monitors existing loans and customers",
-    permissions: ["View Customers", "Add Notes", "Flag Risks"],
-  },
-  {
-    id: 4,
-    name: "Recovery Agent",
-    description: "Handles collection for overdue accounts",
-    permissions: ["View High Risk Customers", "Make Calls", "Add Notes"],
-  },
-];
+// const roles = [
+//   {
+//     id: 1,
+//     name: "Admin",
+//     description: "Full system access and user management",
+//     permissions: ["Manage Users", "Manage Roles", "System Configuration"],
+//   },
+//   {
+//     id: 2,
+//     name: "Underwriter",
+//     description: "Can review and decide on loan applications",
+//     permissions: ["View Customers", "Approve/Reject Loans", "Generate Reports"],
+//   },
+//   {
+//     id: 3,
+//     name: "Monitor",
+//     description: "Monitors existing loans and customers",
+//     permissions: ["View Customers", "Add Notes", "Flag Risks"],
+//   },
+//   {
+//     id: 4,
+//     name: "Recovery Agent",
+//     description: "Handles collection for overdue accounts",
+//     permissions: ["View High Risk Customers", "Make Calls", "Add Notes"],
+//   },
+// ];
 
 export default function Users() {
   const [activeTab, setActiveTab] = useState("users");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [roleDialogOpen, setRoleDialogOpen] = useState(false);
 
-  const handleCreateUser = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In a real app, would make API call to create user
-    toast.success("User created successfully");
-    setDialogOpen(false);
+  // Add state for user form fields
+  const [userForm, setUserForm] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    role: "",
+    phone_number: "",
+  });
+
+  const [roleForm, setRoleForm] = useState({
+    title: "",
+    description: "",
+    permissions: [] as string[],
+  });
+
+  // Handle input changes
+  const handleUserInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setUserForm((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
   };
 
-  const handleCreateRole = (e: React.FormEvent) => {
+  // Handle role select
+  const handleRoleChange = (value: string) => {
+    setUserForm((prev) => ({
+      ...prev,
+      role: value,
+    }));
+  };
+
+  const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, would make API call to create role
-    toast.success("Role created successfully");
-    setRoleDialogOpen(false);
+    // Split name into first and last name (simple split)
+    const [first_name, ...rest] = userForm.first_name.split(" ");
+    const last_name = rest.join(" ");
+    try {
+     const response = await authApi.register({
+        email: userForm.email,
+        role: userForm.role,
+        first_name: first_name,
+        last_name: last_name,
+        phone_number: userForm.phone_number,
+      });
+      toast.success("User created successfully");
+      setDialogOpen(false);
+      setUserForm({
+        first_name: "",
+        last_name: "",
+        email: "",
+        role: "",
+        phone_number: "",
+      });
+    } catch (error: any) {
+      toast.error(error.response.data.detail || "Failed to create user");
+    }
+  };
+
+  // Handle role form input
+  const handleRoleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setRoleForm((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  // Handle permissions checkbox
+  const handlePermissionChange = (perm: string) => {
+    setRoleForm((prev) => ({
+      ...prev,
+      permissions: prev.permissions.includes(perm)
+        ? prev.permissions.filter((p) => p !== perm)
+        : [...prev.permissions, perm],
+    }));
+  };
+
+  const handleCreateRole = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+     const response = await roleApi.createRole({
+        title: roleForm.title,
+        permissions: [
+          roleForm.permissions[0] || "",
+          roleForm.permissions[1] || "",
+        ],
+      });
+      toast.success("Role created successfully");
+      setRoleDialogOpen(false);
+      setRoleForm({ title: "", description: "", permissions: [] });
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || "Failed to create role");
+    }
   };
 
   return (
@@ -137,14 +216,29 @@ export default function Users() {
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="name" className="text-right">
-                        Name
+                      <Label htmlFor="first_name" className="text-right">
+                        First Name
                       </Label>
                       <Input
-                        id="name"
-                        placeholder="Full name"
+                        id="first_name"
+                        placeholder="First name"
                         className="col-span-3"
                         required
+                        value={userForm.first_name}
+                        onChange={handleUserInput}
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="last_name" className="text-right">
+                        Last Name
+                      </Label>
+                      <Input
+                        id="last_name"
+                        placeholder="Last name"
+                        className="col-span-3"
+                        required
+                        value={userForm.last_name}
+                        onChange={handleUserInput}
                       />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
@@ -157,21 +251,43 @@ export default function Users() {
                         type="email"
                         className="col-span-3"
                         required
+                        value={userForm.email}
+                        onChange={handleUserInput}
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="phone_number" className="text-right">
+                        Phone Number
+                      </Label>
+                      <Input
+                        id="phone_number"
+                        placeholder="Phone number"
+                        className="col-span-3"
+                        required
+                        value={userForm.phone_number}
+                        onChange={handleUserInput}
                       />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
                       <Label htmlFor="role" className="text-right">
                         Role
                       </Label>
-                      <Select>
+                      <Select
+                        value={userForm.role}
+                        onValueChange={handleRoleChange}
+                      >
                         <SelectTrigger className="col-span-3">
                           <SelectValue placeholder="Select role" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="admin">Admin</SelectItem>
-                          <SelectItem value="underwriter">Underwriter</SelectItem>
-                          <SelectItem value="monitor">Monitor</SelectItem>
-                          <SelectItem value="recovery">Recovery Agent</SelectItem>
+                          <SelectItem value="Admin">Admin</SelectItem>
+                          <SelectItem value="Underwriter">
+                            Underwriter
+                          </SelectItem>
+                          <SelectItem value="Monitor">Monitor</SelectItem>
+                          <SelectItem value="Recovery Agent">
+                            Recovery Agent
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -184,7 +300,10 @@ export default function Users() {
                     >
                       Cancel
                     </Button>
-                    <Button type="submit" className="bg-navy-800 hover:bg-navy-700">
+                    <Button
+                      type="submit"
+                      className="bg-navy-800 hover:bg-navy-700"
+                    >
                       Create User
                     </Button>
                   </DialogFooter>
@@ -209,14 +328,16 @@ export default function Users() {
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="role-name" className="text-right">
+                      <Label htmlFor="title" className="text-right">
                         Role Name
                       </Label>
                       <Input
-                        id="role-name"
+                        id="title"
                         placeholder="Role name"
                         className="col-span-3"
                         required
+                        value={roleForm.title}
+                        onChange={handleRoleInput}
                       />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
@@ -227,28 +348,32 @@ export default function Users() {
                         id="description"
                         placeholder="Role description"
                         className="col-span-3"
-                        required
+                        value={roleForm.description}
+                        onChange={handleRoleInput}
                       />
                     </div>
                     <div className="grid grid-cols-4 items-start gap-4">
                       <Label className="text-right pt-2">Permissions</Label>
                       <div className="col-span-3 space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <input type="checkbox" id="perm-1" />
-                          <Label htmlFor="perm-1">Manage Users</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <input type="checkbox" id="perm-2" />
-                          <Label htmlFor="perm-2">View Customers</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <input type="checkbox" id="perm-3" />
-                          <Label htmlFor="perm-3">Approve/Reject Loans</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <input type="checkbox" id="perm-4" />
-                          <Label htmlFor="perm-4">Generate Reports</Label>
-                        </div>
+                        {[
+                          "Manage Users",
+                          "View Customers",
+                          "Approve/Reject Loans",
+                          "Generate Reports",
+                        ].map((perm) => (
+                          <div
+                            key={perm}
+                            className="flex items-center space-x-2"
+                          >
+                            <input
+                              type="checkbox"
+                              id={perm}
+                              checked={roleForm.permissions.includes(perm)}
+                              onChange={() => handlePermissionChange(perm)}
+                            />
+                            <Label htmlFor={perm}>{perm}</Label>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -260,7 +385,10 @@ export default function Users() {
                     >
                       Cancel
                     </Button>
-                    <Button type="submit" className="bg-navy-800 hover:bg-navy-700">
+                    <Button
+                      type="submit"
+                      className="bg-navy-800 hover:bg-navy-700"
+                    >
                       Create Role
                     </Button>
                   </DialogFooter>

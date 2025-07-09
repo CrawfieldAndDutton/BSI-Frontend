@@ -1,10 +1,12 @@
 import httpClient from "@/apis/axiosSetup";
+import { UpdateProfilePayload, UpdateRiskConfigPayload } from "@/apis/apiTypes";
 export const settingsApi = {
-  updateProfile: () =>
-    httpClient.put("/dev/banklens/settings/update_profile", {
+  updateProfile: (data: UpdateProfilePayload) =>
+    httpClient.put<any>("/dev/banklens/settings/update_profile", data, {
       headers: { useAuth: true },
     }),
-  updateRiskConfig: (data: any) =>
-    httpClient.put("/dev/banklens/settings/risk_config", data, {}
-    ),
-  }
+  updateRiskConfig: (data: UpdateRiskConfigPayload) =>
+    httpClient.put<any>("/dev/banklens/settings/risk_config", data, {
+      headers: { useAuth: true },
+    }),
+};
