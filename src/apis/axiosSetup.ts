@@ -33,8 +33,8 @@ httpClient.interceptors.request.use(
         customConfig?.headers?.token ||
         (customConfig?.headers?.useRefreshToken
           ? localStorage.getItem("refreshToken")
-          : localStorage.getItem("token"));
-          if (token) {
+          : localStorage.getItem("accessToken"));
+      if (token) {
         // Use AxiosHeaders type for headers
         (customConfig.headers as AxiosHeaders).set(
           "Authorization",
@@ -59,14 +59,14 @@ httpClient.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Clear local storage
-      localStorage.removeItem('token');
-      localStorage.removeItem('refreshToken');
-      
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+
       // Dispatch logout action to Redux
       store.dispatch(logout());
-      
+
       // Redirect to login page
-      window.location.href = '/#/login';
+      window.location.href = "/#/login";
     }
     console.error("API Error:", error);
     return Promise.reject(error);

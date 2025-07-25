@@ -16,7 +16,7 @@ export const authApi = {
     httpClient.post<string>("/dev/banklens/auth/logout", data, {
       headers: { useAuth: true },
     }),
-    
+
   sendOtp: (email: string) =>
     httpClient.post<string>(`/dev/banklens/auth/login/send_otp?email=${email}`),
 
@@ -25,5 +25,10 @@ export const authApi = {
       headers: {
         "Content-Type": "multipart/form-data",
       },
+    }),
+
+  refresh: (refreshToken: string) =>
+    httpClient.post<any>("/dev/banklens/auth/login/verify_otp", refreshToken, {
+      headers: { useRefreshToken: true },
     }),
 };
