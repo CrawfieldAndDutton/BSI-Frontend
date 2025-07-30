@@ -30,32 +30,49 @@ export interface VerifyotpResponse {
 
 export interface CreateRolePayload {
   title: string;
+  description: string;
   permissions: [string, string,];
 }
 
 export interface CreateRoleResponse {
   role: {
     title: string;
+    description: string;
     permissions: [string, string,];
   };
 }
 
 export interface UpdateRolePayload {
   title: string;
+  description: string;
   permissions: [string, string,];
 
 }
 export interface UpdateRoleResponse {
-  
+
     title: string;
+    description: string;
     permissions: [string, string,];
 
+}
+export interface GetRoleResponse {
+  title: string;
+  description: string;
+  permissions: [string, string,];
 }
 export interface UpdateProfilePayload {
   email: string;
   phone_number: string;
 }
 export interface UpdateRiskConfigPayload {
+  general_risk_bucket_min: number;
+  general_risk_bucket_max: number;
+  high_risk_bucket_min: number;
+  medium_risk_bucket_min: number;
+  medium_risk_bucket_max: number;
+  low_risk_bucket_max: number;
+}
+export interface GetRiskConfigResponse {
   general_risk_bucket_min: number;
   general_risk_bucket_max: number;
   high_risk_bucket_min: number;

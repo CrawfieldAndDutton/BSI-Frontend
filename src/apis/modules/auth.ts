@@ -10,7 +10,7 @@ import {
 
 export const authApi = {
   register: (data: RegisterPayload) =>
-    httpClient.post<any>("/dev/banklens/auth/register/user", data),
+    httpClient.post<any>("/dev/banklens/auth/register/user", data, { headers: { useAuth: true } }),
 
   logout: (data: LogoutPayload) =>
     httpClient.post<string>("/dev/banklens/auth/logout", data, {

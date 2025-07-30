@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { settingsApi } from "@/apis/modules/settings";
 import { 
   Card, 
@@ -51,10 +51,10 @@ const Settings = () => {
   // Risk bucket form
   const riskForm = useForm({
     defaultValues: {
-      generalRiskRange: "0-30",
-      highRiskScore: "75-100",
-      mediumRiskScore: "40-74",
-      lowRiskScore: "0-39",
+      generalRiskRange: "",
+      highRiskScore: "",
+      mediumRiskScore: "",
+      lowRiskScore: ""
     }
   });
 
@@ -76,6 +76,36 @@ const Settings = () => {
     }
   });
 
+ useEffect(() => {
+  if (selectedTab === "risk") {
+    const fetchRiskConfig = async () => {
+      try {
+        const res = await settingsApi.getRiskConfig();
+        const data = res.data;
+
+        riskForm.setValue(
+          "generalRiskRange",
+          `${data.general_risk_bucket_min}-${data.general_risk_bucket_max}`
+        );
+        riskForm.setValue("highRiskScore", `${data.high_risk_bucket_min}`);
+        riskForm.setValue(
+          "mediumRiskScore",
+          `${data.medium_risk_bucket_min}-${data.medium_risk_bucket_max}`
+        );
+        riskForm.setValue("lowRiskScore", `${data.low_risk_bucket_max}`);
+      } catch (error: any) {
+        toast({
+          title: "Failed to fetch risk config",
+          description: error?.response?.data?.detail || "An error occurred.",
+          variant: "destructive",
+        });
+      }
+    };
+
+    fetchRiskConfig();
+  }
+}, [selectedTab]);
+
   const onProfileSubmit = async (data: any) => {
   try {
     const response = await settingsApi.updateProfile({
@@ -95,15 +125,15 @@ const Settings = () => {
   }
 };
 
-  const onRiskSubmit = async (data: any) => {
+ const onRiskSubmit = async (data: any) => {
   try {
-    // Parse values from form (assuming "0-30" format)
+    // Parse ranges
     const [generalMin, generalMax] = data.generalRiskRange.split("-").map(Number);
-    const [highMin] = data.highRiskScore.split("-").map(Number);
+    const highMin = Number(data.highRiskScore); // Single number
     const [mediumMin, mediumMax] = data.mediumRiskScore.split("-").map(Number);
-    const [, lowMax] = data.lowRiskScore.split("-").map(Number);
+    const lowMax = Number(data.lowRiskScore); // Single number
 
-   const response = await settingsApi.updateRiskConfig({
+    const response = await settingsApi.updateRiskConfig({
       general_risk_bucket_min: generalMin,
       general_risk_bucket_max: generalMax,
       high_risk_bucket_min: highMin,
@@ -114,7 +144,7 @@ const Settings = () => {
 
     toast({
       title: "Risk bucket settings updated",
-      description: "Risk bucket configurations have been updated successfully.",
+      description: response?.data?.detail ||"Risk bucket configurations have been updated successfully.",
     });
   } catch (error: any) {
     toast({
@@ -296,7 +326,6 @@ const Settings = () => {
                       )}
                     />
 
-                    <Separator className="my-4" />
 
                     <FormField
                       control={riskForm.control}
