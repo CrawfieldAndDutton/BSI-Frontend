@@ -2,7 +2,7 @@ import httpClient from "@/apis/axiosSetup";
 import { CreateRolePayload ,UpdateRolePayload,CreateRoleResponse,UpdateRoleResponse,GetRoleResponse} from "../apiTypes";
 export const roleApi = {
   createRole: (data: CreateRolePayload) =>
-    httpClient.post<CreateRoleResponse>("/dev/banklens/role/create", data, {
+    httpClient.post<CreateRoleResponse>("/dev/banklens/role/create_role", data, {
       headers: { useAuth: true },
     }),
   getRoles: () =>

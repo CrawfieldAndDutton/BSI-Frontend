@@ -102,13 +102,13 @@ export default function Users() {
       );
       return;
     }
-    const payload: CreateRolePayload = {
-      title: roleName,
-      description: roleDescription,
-      permissions: rolePermissions as [string, string],
-    };
+
     try {
-      await roleApi.createRole(payload);
+      await roleApi.createRole({
+        title: roleName,
+        description: roleDescription,
+        permissions: rolePermissions as [string, string],
+      });
       toast.success("Role created successfully");
       setActiveTab("roles");
       await fetchRoles();
