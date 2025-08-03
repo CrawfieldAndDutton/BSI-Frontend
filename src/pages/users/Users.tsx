@@ -66,12 +66,19 @@ export default function Users() {
     "Review BSI Report",
     "Edit BSI Report",
     "Comment BSI Report",
+    "Trigger AI Agent Call",
+    "Review AI Agent Call Report",
+    "Audit AI Agent Call Report",
   ];
 
   // Fetch roles from backend
   useEffect(() => {
-    if (activeTab === "roles") {
-      fetchRoles();
+  fetchRoles();
+}, []);
+
+  useEffect(() => {
+    if (activeTab === "users") {
+      fetchUsers();
     }
   }, [activeTab]);
 
@@ -90,6 +97,26 @@ export default function Users() {
       setRoles([]);
     } finally {
       setLoadingRoles(false);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const response = await authApi.getUsers(); // assuming getUsers is inside authApi
+      const userData = response.data || [];
+
+      const formattedUsers = userData.map((user: any) => ({
+        name: `${user.first_name} ${user.last_name}`,
+        email: user.email,
+        phone: user.phone_number,
+        role: user.role,
+        status: user.is_active ? "Active" : "Inactive",
+      }));
+
+      setUsers(formattedUsers);
+    } catch (error) {
+      toast.error("Failed to fetch users");
+      setUsers([]);
     }
   };
 
@@ -154,16 +181,17 @@ export default function Users() {
         toast.error("Failed to fetch role details.");
         return;
       }
-
+      
       await authApi.register({
         first_name: firstName,
         last_name: lastName,
         email,
         phone_number: phone,
-        role: roleDetails, // or roleDetails.title depending on API
+        role: selectedRole, // or roleDetails.title depending on API
       });
 
       toast.success("User created successfully");
+      await fetchUsers();
       setDialogOpen(false);
       setSelectedRole("");
       // Optionally refresh users here
@@ -289,8 +317,9 @@ export default function Users() {
                       <Input
                         id="number"
                         placeholder="Phone number"
-                        type="number"
+                        type="tel"
                         className="col-span-3"
+                        maxLength={10}
                         required
                       />
                     </div>
@@ -426,32 +455,48 @@ export default function Users() {
         <TabsContent value="users" className="mt-6">
           <div className="stats-card">
             <div className="overflow-x-auto">
-              <table className="w-full table-container">
+              <table className="w-full border-collapse">
                 <thead>
-                  <tr className="table-header">
-                    <th className="table-cell">Name</th>
-                    <th className="table-cell">Email</th>
-                    <th className="table-cell">Role</th>
-                    <th className="table-cell">Status</th>
-                    <th className="table-cell text-right">Actions</th>
+                  <tr className="bg-gray-100 text-sm text-gray-600">
+                    <th className="px-4 py-2 text-left">Name</th>
+                    <th className="px-4 py-2 text-left">Email</th>
+                    <th className="px-4 py-2 text-left">Role</th>
+                    <th className="px-4 py-2 text-left">Phone Number</th>
+                    <th className="px-4 py-2 text-left">Status</th>
+                    <th className="px-4 py-2 text-right w-[1%] whitespace-nowrap">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.map((user) => (
-                    <tr key={user.id} className="table-row">
-                      <td className="table-cell font-medium">{user.name}</td>
-                      <td className="table-cell">{user.email}</td>
-                      <td className="table-cell">{user.role}</td>
-                      <td className="table-cell">
-                        <StatusBadge status={user.status} />
+                    <tr key={user.id} className="border-b hover:bg-gray-50">
+                      <td className="px-4 py-2 font-medium text-gray-900">
+                        {user.name}
                       </td>
-                      <td className="table-cell text-right">
-                        <Button variant="ghost" size="sm">
-                          <Edit size={16} />
-                        </Button>
-                        <Button variant="ghost" size="sm">
-                          <Trash size={16} />
-                        </Button>
+                      <td className="px-4 py-2">{user.email}</td>
+                      <td className="px-4 py-2">{user.role}</td>
+                      <td className="px-4 py-2">{user.phone}</td>
+                      <td className="px-4 py-2">
+                        <span
+                          className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                            user.status === "Active"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-700"
+                          }`}
+                        >
+                          {user.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2 text-right w-[1%] whitespace-nowrap">
+                        <div className="flex justify-end items-center gap-1">
+                          <Button variant="ghost" size="sm" className="p-1">
+                            <Edit size={16} />
+                          </Button>
+                          <Button variant="ghost" size="sm" className="p-1">
+                            <Trash size={16} />
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -460,6 +505,7 @@ export default function Users() {
             </div>
           </div>
         </TabsContent>
+
         <TabsContent value="roles" className="mt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {loadingRoles ? (

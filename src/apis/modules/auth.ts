@@ -17,6 +17,12 @@ export const authApi = {
       headers: { useAuth: true },
     }),
     
+    getUsers: () =>
+        httpClient.get<any>("/dev/banklens/auth/users", {
+          headers: { useAuth: true },
+        }),
+
+
   sendOtp: (email: string) =>
     httpClient.post<string>(`/dev/banklens/auth/login/send_otp?email=${email}`),
 

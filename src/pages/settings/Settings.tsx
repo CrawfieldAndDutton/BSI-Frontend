@@ -114,7 +114,7 @@ const Settings = () => {
     });
     toast({
       title: "Profile settings updated",
-      description: "Your profile settings have been updated successfully.",
+      description: response?.data?.detail ||"Your profile settings have been updated successfully.",
     });
   } catch (error: any) {
     toast({
