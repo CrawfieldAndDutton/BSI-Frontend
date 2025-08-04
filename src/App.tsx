@@ -3,6 +3,12 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {
+  setRefreshToken,
+  setAccessToken,
+  setTokenExpiry,
+} from "./store/userSlice";
 
 import Login from "./pages/login/Login";
 import Dashboard from "./pages/dashboard/Dashboard";
@@ -37,6 +43,7 @@ import { authApi } from "./apis/modules/auth";
 const queryClient = new QueryClient();
 
 const App = () => {
+  const dispatch = useDispatch();
   useEffect(() => {
     const tokenExpiry = localStorage.getItem("tokenExpiry");
     const refreshToken = localStorage.getItem("refreshToken");
@@ -52,10 +59,17 @@ const App = () => {
           const refreshApi = async () => {
             try {
               const response = await authApi.refresh(refreshToken);
+              if (response.data.access_token) {
+                dispatch(setAccessToken(response.data.access_token));
+                dispatch(setRefreshToken(response.data.refresh_token));
+                dispatch(setTokenExpiry(response.data.token_expiry));
+              }
+              console.log("Token refreshed successfully");
             } catch (error) {
               console.error("Error during token refresh:", error);
             }
           };
+          refreshApi();
         }
       }
     }, 100000);
