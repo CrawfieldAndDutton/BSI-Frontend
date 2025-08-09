@@ -54,10 +54,6 @@ export default function Users() {
 
   // Permissions list (could be fetched from backend if needed)
   const availablePermissions = [
-    "Manage Users",
-    "View Customers",
-    "Approve/Reject Loans",
-    "Generate Reports",
     "User Creation",
     "User Removal",
     "Customer Creation",
@@ -68,7 +64,7 @@ export default function Users() {
     "Comment BSI Report",
     "Trigger AI Agent Call",
     "Review AI Agent Call Report",
-    "Audit AI Agent Call Report",
+    "Audit AI Agent Call Report"
   ];
 
   // Fetch roles from backend
@@ -143,8 +139,8 @@ export default function Users() {
       setRoleName("");
       setRoleDescription("");
       setRolePermissions([]);
-    } catch {
-      toast.error("Failed to create role");
+    } catch (error: any){
+      toast.error(error.response.data.detail  ||"Failed to create role");
     }
   };
 
@@ -195,8 +191,8 @@ export default function Users() {
       setDialogOpen(false);
       setSelectedRole("");
       // Optionally refresh users here
-    } catch (error) {
-      toast.error("Failed to create user");
+    } catch (error: any) {
+      toast.error(error.response.data.detail  ||"Failed to create user");
     }
   };
 
@@ -230,8 +226,8 @@ export default function Users() {
       setRoleDescription("");
       setRolePermissions([]);
       fetchRoles();
-    } catch {
-      toast.error("Failed to update role");
+    } catch (error: any) {
+      toast.error(error.response.data.detail  ||"Failed to update role");
     }
   };
 
@@ -249,8 +245,8 @@ export default function Users() {
       setDeleteRoleDialogOpen(false);
       setRoleToDelete(null);
       fetchRoles();
-    } catch {
-      toast.error("Failed to delete role");
+    } catch (error: any) {
+      toast.error(error.response.data.detail  ||"Failed to delete role");
     }
   };
 
