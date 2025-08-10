@@ -74,6 +74,15 @@ export function AddCustomerModal({
       );
     } finally {
       setIsLoading(false);
+      setForm({
+        name: "",
+        dob: "",
+        pan: "",
+        email: "",
+        phone: "",
+        loan_amount: 0,
+        loan_types: "",
+      });
     }
   };
 

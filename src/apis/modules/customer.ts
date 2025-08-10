@@ -12,8 +12,13 @@ export const customerApi = {
       headers: { useAuth: true, "Content-Type": "multipart/form-data" },
     }),
 
+  all_customer_fetch: () =>
+    httpClient.get<any>(`/dev/banklens/customer/get_all_customers`, {
+      headers: { useAuth: true },
+    }),
+
   customer_fetch: (id: string) =>
-    httpClient.get<any>(`/dev/banklens/customer/${id}/user_fetch`, {
+    httpClient.get<any>(`/dev/banklens/customer/${id}`, {
       headers: { useAuth: true },
     }),
 

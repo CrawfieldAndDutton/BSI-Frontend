@@ -17,6 +17,7 @@ import { customerApi } from "@/apis/modules/customer";
 interface BulkUploadModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSubmit: (open: boolean) => void;
 }
 
 export function BulkUploadModal({ open, onOpenChange }: BulkUploadModalProps) {
@@ -54,7 +55,7 @@ export function BulkUploadModal({ open, onOpenChange }: BulkUploadModalProps) {
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <form onClick={handleSubmit}>
+        <form>
           <DialogHeader>
             <DialogTitle>Bulk Upload Customers</DialogTitle>
             <DialogDescription>
@@ -88,7 +89,11 @@ export function BulkUploadModal({ open, onOpenChange }: BulkUploadModalProps) {
             >
               Cancel
             </Button>
-            <Button type="submit" className="bg-navy-800 hover:bg-navy-700">
+            <Button
+              type="submit"
+              className="bg-navy-800 hover:bg-navy-700"
+              onClick={handleSubmit}
+            >
               <Upload className="mr-1 h-4 w-4" />
               Upload File
             </Button>

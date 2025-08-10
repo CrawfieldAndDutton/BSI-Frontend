@@ -44,38 +44,44 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const dispatch = useDispatch();
+
   useEffect(() => {
-    const tokenExpiry = localStorage.getItem("tokenExpiry");
-    const refreshToken = localStorage.getItem("refreshToken");
-    const interval = setInterval(() => {
-      console.log("Running every 5 seconds", tokenExpiry, refreshToken);
-      if (refreshToken) {
-        const expiryTime = new Date(tokenExpiry);
-        const now = new Date();
-        const diffInMs = Number(expiryTime) - Number(now);
-        const diffInMinutes = diffInMs / 1000 / 60;
-        console.log(diffInMinutes);
-        if (diffInMinutes < 10) {
-          const refreshApi = async () => {
-            try {
-              const response = await authApi.refresh(refreshToken);
-              if (response.data.access_token) {
-                dispatch(setAccessToken(response.data.access_token));
-                dispatch(setRefreshToken(response.data.refresh_token));
-                dispatch(setTokenExpiry(response.data.token_expiry));
-              }
-              console.log("Token refreshed successfully");
-            } catch (error) {
-              console.error("Error during token refresh:", error);
-            }
-          };
-          refreshApi();
+    const checkAndRefreshToken = async () => {
+      const tokenExpiry = localStorage.getItem("tokenExpiry");
+      const refreshToken = localStorage.getItem("refreshToken");
+
+      if (!refreshToken || !tokenExpiry) return;
+
+      const expiryTime = new Date(tokenExpiry).getTime();
+      const now = Date.now();
+      const diffInMinutes = (expiryTime - now) / 1000 / 60;
+
+      console.log(`Token expires in ${diffInMinutes.toFixed(2)} minutes`);
+
+      if (diffInMinutes < 10) {
+        try {
+          const response = await authApi.refresh(refreshToken);
+          if (response.data.access_token) {
+            dispatch(setAccessToken(response.data.access_token));
+            dispatch(setRefreshToken(response.data.refresh_token));
+            dispatch(setTokenExpiry(response.data.token_expiry));
+            console.log("Token refreshed successfully");
+          }
+        } catch (error) {
+          console.error("Error during token refresh:", error);
         }
       }
-    }, 100000);
+    };
+
+    //  Run once immediately
+    checkAndRefreshToken();
+
+    //  Then check every 15 minutes
+    const interval = setInterval(checkAndRefreshToken, 15 * 60 * 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [dispatch]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
