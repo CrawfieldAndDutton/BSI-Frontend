@@ -1,9 +1,14 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {
+  setRefreshToken,
+  setAccessToken,
+  setTokenExpiry,
+} from "./store/userSlice";
 
 import Login from "./pages/login/Login";
 import Dashboard from "./pages/dashboard/Dashboard";
@@ -32,54 +37,201 @@ import CreditReportConsent from "./pages/credit-report/CreditReportConsent";
 import { Provider } from "react-redux";
 import store from "./store/store";
 import PrivateRoute from "./routes/PrivateRoute";
+import { useEffect } from "react";
+import { authApi } from "./apis/modules/auth";
 
 const queryClient = new QueryClient();
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const checkAndRefreshToken = async () => {
+      const tokenExpiry = localStorage.getItem("tokenExpiry");
+      const refreshToken = localStorage.getItem("refreshToken");
+
+      if (!refreshToken || !tokenExpiry) return;
+
+      const expiryTime = new Date(tokenExpiry).getTime();
+      const now = Date.now();
+      const diffInMinutes = (expiryTime - now) / 1000 / 60;
+
+      console.log(`Token expires in ${diffInMinutes.toFixed(2)} minutes`);
+
+      if (diffInMinutes < 10) {
+        try {
+          const response = await authApi.refresh(refreshToken);
+          if (response.data.access_token) {
+            dispatch(setAccessToken(response.data.access_token));
+            dispatch(setRefreshToken(response.data.refresh_token));
+            dispatch(setTokenExpiry(response.data.token_expiry));
+            console.log("Token refreshed successfully");
+          }
+        } catch (error) {
+          console.error("Error during token refresh:", error);
+        }
+      }
+    };
+
+    //  Run once immediately
+    checkAndRefreshToken();
+
+    //  Then check every 15 minutes
+    const interval = setInterval(checkAndRefreshToken, 15 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [dispatch]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            
-            {/* All routes are now accessible without authentication */}
-            <Route element={<PrivateRoute />}>
-            <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
-            <Route path="/users" element={<MainLayout><Users /></MainLayout>} />
-            <Route path="/customers" element={<MainLayout><Customers /></MainLayout>} />
-            <Route path="/customers/:id" element={<MainLayout><CustomerProfile /></MainLayout>} />
-            <Route path="/customers/:id/analysis" element={<MainLayout><CustomerAnalysis /></MainLayout>} />
-            <Route path="/monitoring" element={<MainLayout><Monitoring /></MainLayout>} />
-            <Route path="/monitoring/signals" element={<MainLayout><IndividualSignals /></MainLayout>} />
-            <Route path="/monitoring/signals/:id" element={<MainLayout><IndividualSignals /></MainLayout>} />
-            <Route path="/recovery" element={<MainLayout><Recovery /></MainLayout>} />
-            <Route path="/recovery/history/:id" element={<MainLayout><CallHistory /></MainLayout>} />
-            <Route path="/notifications" element={<MainLayout><Notifications /></MainLayout>} />
-            <Route path="/settings" element={<MainLayout><Settings /></MainLayout>} />
-            
-            {/* Bank Statement Intelligence Journey */}
-            <Route path="/bank-statement" element={<BankStatementIndex />} />
-            <Route path="/bank-statement/submit-details" element={<SubmitDetails />} />
-            <Route path="/bank-statement/account-discovery" element={<AccountDiscovery />} />
-            <Route path="/bank-statement/consent" element={<Consent />} />
-            <Route path="/bank-statement/thank-you" element={<ThankYou />} />
-            
-            {/* Credit Report Journey */}
-            <Route path="/credit-report/consent" element={<CreditReportConsent />} />
-            
-            {/* Redirect root to dashboard */}
-            <Route path="/" element={<MainLayout><Dashboard /></MainLayout>} />
-            
-            {/* 404 Not Found */}
-            <Route path="*" element={<NotFound />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+
+              {/* All routes are now accessible without authentication */}
+              <Route element={<PrivateRoute />}>
+                <Route
+                  path="/dashboard"
+                  element={
+                    <MainLayout>
+                      <Dashboard />
+                    </MainLayout>
+                  }
+                />
+                <Route
+                  path="/users"
+                  element={
+                    <MainLayout>
+                      <Users />
+                    </MainLayout>
+                  }
+                />
+                <Route
+                  path="/customers"
+                  element={
+                    <MainLayout>
+                      <Customers />
+                    </MainLayout>
+                  }
+                />
+                <Route
+                  path="/customers/:id"
+                  element={
+                    <MainLayout>
+                      <CustomerProfile />
+                    </MainLayout>
+                  }
+                />
+                <Route
+                  path="/customers/:id/analysis"
+                  element={
+                    <MainLayout>
+                      <CustomerAnalysis />
+                    </MainLayout>
+                  }
+                />
+                <Route
+                  path="/monitoring"
+                  element={
+                    <MainLayout>
+                      <Monitoring />
+                    </MainLayout>
+                  }
+                />
+                <Route
+                  path="/monitoring/signals"
+                  element={
+                    <MainLayout>
+                      <IndividualSignals />
+                    </MainLayout>
+                  }
+                />
+                <Route
+                  path="/monitoring/signals/:id"
+                  element={
+                    <MainLayout>
+                      <IndividualSignals />
+                    </MainLayout>
+                  }
+                />
+                <Route
+                  path="/recovery"
+                  element={
+                    <MainLayout>
+                      <Recovery />
+                    </MainLayout>
+                  }
+                />
+                <Route
+                  path="/recovery/history/:id"
+                  element={
+                    <MainLayout>
+                      <CallHistory />
+                    </MainLayout>
+                  }
+                />
+                <Route
+                  path="/notifications"
+                  element={
+                    <MainLayout>
+                      <Notifications />
+                    </MainLayout>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <MainLayout>
+                      <Settings />
+                    </MainLayout>
+                  }
+                />
+
+                {/* Bank Statement Intelligence Journey */}
+                <Route
+                  path="/bank-statement"
+                  element={<BankStatementIndex />}
+                />
+                <Route
+                  path="/bank-statement/submit-details"
+                  element={<SubmitDetails />}
+                />
+                <Route
+                  path="/bank-statement/account-discovery"
+                  element={<AccountDiscovery />}
+                />
+                <Route path="/bank-statement/consent" element={<Consent />} />
+                <Route
+                  path="/bank-statement/thank-you"
+                  element={<ThankYou />}
+                />
+
+                {/* Credit Report Journey */}
+                <Route
+                  path="/credit-report/consent"
+                  element={<CreditReportConsent />}
+                />
+
+                {/* Redirect root to dashboard */}
+                <Route
+                  path="/"
+                  element={
+                    <MainLayout>
+                      <Dashboard />
+                    </MainLayout>
+                  }
+                />
+
+                {/* 404 Not Found */}
+                <Route path="*" element={<NotFound />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
       </Provider>
     </QueryClientProvider>
   );

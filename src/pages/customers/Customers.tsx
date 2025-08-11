@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AddCustomerModal } from "./components/AddCustomerModal";
 import { BulkUploadModal } from "./components/BulkUploadModal";
 import { CustomerSearch } from "./components/CustomerSearch";
 import { CustomersTable } from "./components/CustomersTable";
+import { customerApi } from "@/apis/modules/customer";
 
 const customers = [
   {
@@ -58,27 +59,36 @@ export default function Customers() {
   const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [filteredCustomers, setFilteredCustomers] = useState(customers);
-  
+  const [allCustomer, setAllCustomer] = useState([]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const filtered = customers.filter(customer => 
-      customer.name.toLowerCase().includes(search.toLowerCase()) ||
-      customer.id.toLowerCase().includes(search.toLowerCase())
+    const filtered = customers.filter(
+      (customer) =>
+        customer.name.toLowerCase().includes(search.toLowerCase()) ||
+        customer.id.toLowerCase().includes(search.toLowerCase())
     );
     setFilteredCustomers(filtered);
   };
-  
+
   const handleSendLink = (e: React.FormEvent) => {
     e.preventDefault();
     toast.success("Data sharing link sent successfully");
     setDialogOpen(false);
   };
 
-  const handleBulkUpload = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.success("Bulk upload initiated successfully");
-    setBulkUploadOpen(false);
-  };
+  useEffect(() => {
+    const getCustomers = async () => {
+      try {
+        const customer = await customerApi.all_customer_fetch();
+        console.log(customer.data.result);
+        setAllCustomer(customer.data.result);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    getCustomers();
+  }, [dialogOpen]);
 
   return (
     <div className="space-y-6">
@@ -88,7 +98,9 @@ export default function Customers() {
           <BulkUploadModal
             open={bulkUploadOpen}
             onOpenChange={setBulkUploadOpen}
-            onSubmit={handleBulkUpload}
+            onSubmit={() => {
+              setBulkUploadOpen(false);
+            }}
           />
           <AddCustomerModal
             open={dialogOpen}
@@ -104,7 +116,7 @@ export default function Customers() {
           onSearchChange={setSearch}
           onSubmit={handleSearch}
         />
-        <CustomersTable customers={filteredCustomers} />
+        <CustomersTable customers={allCustomer} />
       </div>
     </div>
   );

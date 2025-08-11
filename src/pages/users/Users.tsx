@@ -79,22 +79,25 @@ export default function Users() {
   }, [activeTab]);
 
   const fetchRoles = async () => {
-    setLoadingRoles(true);
-    try {
-      const response = await roleApi.getRoles();
-      const rolesFromApi = response.data || [];
-      const formattedRoles = rolesFromApi.map((role: any) => ({
-        title: role.title,
-        description: role.description,
-        permissions: role.permissions || [],
-      }));
-      setRoles(formattedRoles);
-    } catch {
-      setRoles([]);
-    } finally {
-      setLoadingRoles(false);
-    }
-  };
+  setLoadingRoles(true);
+  try {
+    const response = await roleApi.getRoles();
+    const rolesFromApi = response.data || [];
+    const formattedRoles = rolesFromApi.map((role: any) => ({
+      title: role.title,
+      description: role.description,
+      permissions: role.permissions || [],
+    }));
+    setRoles(formattedRoles);
+  } catch (error: any) {
+    toast.error(error?.response?.data?.detail || "Failed to fetch roles");
+    // Reset roles in case of error
+    setRoles([]);
+  } finally {
+    setLoadingRoles(false);
+  }
+};
+
 
   const fetchUsers = async () => {
     try {
@@ -110,8 +113,8 @@ export default function Users() {
       }));
 
       setUsers(formattedUsers);
-    } catch (error) {
-      toast.error("Failed to fetch users");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.detail  ||"Failed to fetch users");
       setUsers([]);
     }
   };
@@ -140,7 +143,7 @@ export default function Users() {
       setRoleDescription("");
       setRolePermissions([]);
     } catch (error: any){
-      toast.error(error.response.data.detail  ||"Failed to create role");
+      toast.error(error?.response?.data?.detail  ||"Failed to create role");
     }
   };
 
@@ -192,7 +195,7 @@ export default function Users() {
       setSelectedRole("");
       // Optionally refresh users here
     } catch (error: any) {
-      toast.error(error.response.data.detail  ||"Failed to create user");
+      toast.error(error?.response?.data?.detail  ||"Failed to create user");
     }
   };
 
@@ -227,7 +230,7 @@ export default function Users() {
       setRolePermissions([]);
       fetchRoles();
     } catch (error: any) {
-      toast.error(error.response.data.detail  ||"Failed to update role");
+      toast.error(error?.response?.data?.detail  ||"Failed to update role");
     }
   };
 
@@ -246,7 +249,7 @@ export default function Users() {
       setRoleToDelete(null);
       fetchRoles();
     } catch (error: any) {
-      toast.error(error.response.data.detail  ||"Failed to delete role");
+      toast.error(error?.response?.data?.detail  ||"Failed to delete role");
     }
   };
 

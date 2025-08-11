@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { StatusBadge } from "@/components/dashboard/StatusBadge";
@@ -15,13 +14,18 @@ import {
 } from "@/components/ui/table";
 
 interface Customer {
-  id: string;
+  customer_id: string;
+  dob: string;
   name: string;
+  enterprise_id: string;
+  extra_data: object;
   email: string;
   phone: string;
-  loanAmount: number;
-  status: string;
-  dateAdded: string;
+  loan_amount: number;
+  loan_types: string;
+  pan: string;
+  updated_at: string;
+  _id: string;
 }
 
 interface CustomersTableProps {
@@ -45,12 +49,12 @@ export function CustomersTable({ customers }: CustomersTableProps) {
   const sortedCustomers = [...customers].sort((a, b) => {
     if (sortField === "loanAmount") {
       return sortDirection === "asc"
-        ? a.loanAmount - b.loanAmount
-        : b.loanAmount - a.loanAmount;
+        ? a.loan_amount - b.loan_amount
+        : b.loan_amount - a.loan_amount;
     } else if (sortField === "dateAdded") {
       return sortDirection === "asc"
-        ? new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime()
-        : new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime();
+        ? new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime()
+        : new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
     } else {
       const aValue = a[sortField as keyof Customer] || "";
       const bValue = b[sortField as keyof Customer] || "";
@@ -73,7 +77,9 @@ export function CustomersTable({ customers }: CustomersTableProps) {
                 <div className="flex items-center">
                   Customer ID
                   {sortField === "id" && (
-                    <span className="ml-1">{sortDirection === "asc" ? "↑" : "↓"}</span>
+                    <span className="ml-1">
+                      {sortDirection === "asc" ? "↑" : "↓"}
+                    </span>
                   )}
                 </div>
               </TableHead>
@@ -84,7 +90,9 @@ export function CustomersTable({ customers }: CustomersTableProps) {
                 <div className="flex items-center">
                   Name
                   {sortField === "name" && (
-                    <span className="ml-1">{sortDirection === "asc" ? "↑" : "↓"}</span>
+                    <span className="ml-1">
+                      {sortDirection === "asc" ? "↑" : "↓"}
+                    </span>
                   )}
                 </div>
               </TableHead>
@@ -96,7 +104,9 @@ export function CustomersTable({ customers }: CustomersTableProps) {
                 <div className="flex items-center">
                   Status
                   {sortField === "status" && (
-                    <span className="ml-1">{sortDirection === "asc" ? "↑" : "↓"}</span>
+                    <span className="ml-1">
+                      {sortDirection === "asc" ? "↑" : "↓"}
+                    </span>
                   )}
                 </div>
               </TableHead>
@@ -107,7 +117,9 @@ export function CustomersTable({ customers }: CustomersTableProps) {
                 <div className="flex items-center justify-end">
                   Loan Amount
                   {sortField === "loanAmount" && (
-                    <span className="ml-1">{sortDirection === "asc" ? "↑" : "↓"}</span>
+                    <span className="ml-1">
+                      {sortDirection === "asc" ? "↑" : "↓"}
+                    </span>
                   )}
                 </div>
               </TableHead>
@@ -118,7 +130,9 @@ export function CustomersTable({ customers }: CustomersTableProps) {
                 <div className="flex items-center">
                   Date Added
                   {sortField === "dateAdded" && (
-                    <span className="ml-1">{sortDirection === "asc" ? "↑" : "↓"}</span>
+                    <span className="ml-1">
+                      {sortDirection === "asc" ? "↑" : "↓"}
+                    </span>
                   )}
                 </div>
               </TableHead>
@@ -129,10 +143,12 @@ export function CustomersTable({ customers }: CustomersTableProps) {
             {sortedCustomers.length > 0 ? (
               sortedCustomers.map((customer) => (
                 <TableRow
-                  key={customer.id}
+                  key={customer.customer_id}
                   className="hover:bg-gray-50/50 transition-colors"
                 >
-                  <TableCell className="font-medium">{customer.id}</TableCell>
+                  <TableCell className="font-medium">
+                    {customer.customer_id}
+                  </TableCell>
                   <TableCell>{customer.name}</TableCell>
                   <TableCell>
                     <div className="text-sm">
@@ -141,20 +157,22 @@ export function CustomersTable({ customers }: CustomersTableProps) {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <StatusBadge status={customer.status} />
+                    <StatusBadge status={"initiated"} />
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatCurrency(customer.loanAmount)}
+                    {formatCurrency(customer.loan_amount)}
                   </TableCell>
                   <TableCell>
-                    {new Date(customer.dateAdded).toLocaleDateString("en-IN")}
+                    {new Date(customer.updated_at).toLocaleDateString("en-IN")}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end space-x-2">
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => navigate(`/customers/${customer.id}`)}
+                        onClick={() =>
+                          navigate(`/customers/${customer.customer_id}`)
+                        }
                       >
                         <Eye className="mr-1.5 h-4 w-4" />
                         View
@@ -165,7 +183,10 @@ export function CustomersTable({ customers }: CustomersTableProps) {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                <TableCell
+                  colSpan={7}
+                  className="text-center py-8 text-gray-500"
+                >
                   No customers found matching your search criteria.
                 </TableCell>
               </TableRow>

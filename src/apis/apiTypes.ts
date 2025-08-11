@@ -109,4 +109,14 @@ export interface DashboardResponse {
   calls: number;
 }
 
+export interface CustomerCreatePaylaod {
+  name: string;
+  dob: string;
+  pan: string;
+  email: string;
+  phone: string;
+  loan_amount: number;
+  loan_types: string;
+}
+
 export type DashboardResponseArray = DashboardResponse[];
