@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { settingsApi } from "@/apis/modules/settings";
 import { 
   Card, 
   CardContent, 
@@ -50,10 +51,10 @@ const Settings = () => {
   // Risk bucket form
   const riskForm = useForm({
     defaultValues: {
-      generalRiskRange: "0-30",
-      highRiskScore: "75-100",
-      mediumRiskScore: "40-74",
-      lowRiskScore: "0-39",
+      generalRiskRange: "",
+      highRiskScore: "",
+      mediumRiskScore: "",
+      lowRiskScore: ""
     }
   });
 
@@ -75,21 +76,84 @@ const Settings = () => {
     }
   });
 
-  const onProfileSubmit = (data: any) => {
+ useEffect(() => {
+  if (selectedTab === "risk") {
+    const fetchRiskConfig = async () => {
+      try {
+        const res = await settingsApi.getRiskConfig();
+        const data = res.data;
+
+        riskForm.setValue(
+          "generalRiskRange",
+          `${data.general_risk_bucket_min}-${data.general_risk_bucket_max}`
+        );
+        riskForm.setValue("highRiskScore", `${data.high_risk_bucket_min}`);
+        riskForm.setValue(
+          "mediumRiskScore",
+          `${data.medium_risk_bucket_min}-${data.medium_risk_bucket_max}`
+        );
+        riskForm.setValue("lowRiskScore", `${data.low_risk_bucket_max}`);
+      } catch (error: any) {
+        toast({
+          title: "Failed to fetch risk config",
+          description: error?.response?.data?.detail || "An error occurred.",
+          variant: "destructive",
+        });
+      }
+    };
+
+    fetchRiskConfig();
+  }
+}, [selectedTab]);
+
+  const onProfileSubmit = async (data: any) => {
+  try {
+    const response = await settingsApi.updateProfile({
+      email: data.email,
+      phone_number: data.mobileNumber,
+    });
     toast({
       title: "Profile settings updated",
-      description: "Your profile settings have been updated successfully.",
+      description: response?.data?.detail ||"Your profile settings have been updated successfully.",
     });
-    console.log("Profile settings:", data);
-  };
+  } catch (error: any) {
+    toast({
+      title: "Failed to update profile",
+      description: error?.response?.data?.detail || "An error occurred.",
+      variant: "destructive",
+    });
+  }
+};
 
-  const onRiskSubmit = (data: any) => {
+ const onRiskSubmit = async (data: any) => {
+  try {
+    // Parse ranges
+    const [generalMin, generalMax] = data.generalRiskRange.split("-").map(Number);
+    const highMin = Number(data.highRiskScore); // Single number
+    const [mediumMin, mediumMax] = data.mediumRiskScore.split("-").map(Number);
+    const lowMax = Number(data.lowRiskScore); // Single number
+
+    const response = await settingsApi.updateRiskConfig({
+      general_risk_bucket_min: generalMin,
+      general_risk_bucket_max: generalMax,
+      high_risk_bucket_min: highMin,
+      medium_risk_bucket_min: mediumMin,
+      medium_risk_bucket_max: mediumMax,
+      low_risk_bucket_max: lowMax,
+    });
+
     toast({
       title: "Risk bucket settings updated",
-      description: "Risk bucket configurations have been updated successfully.",
+      description: response?.data?.detail ||"Risk bucket configurations have been updated successfully.",
     });
-    console.log("Risk settings:", data);
-  };
+  } catch (error: any) {
+    toast({
+      title: "Failed to update risk settings",
+      description: error?.response?.data?.detail || "An error occurred.",
+      variant: "destructive",
+    });
+  }
+};
 
   const onIntegrationSubmit = (data: any) => {
     toast({
@@ -262,7 +326,6 @@ const Settings = () => {
                       )}
                     />
 
-                    <Separator className="my-4" />
 
                     <FormField
                       control={riskForm.control}
