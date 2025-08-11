@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -12,15 +11,19 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { toast } from "sonner";
+import { authApi } from "@/apis/modules/auth";
+import { useDispatch } from "react-redux";
+import { setAuthData } from "@/store/userSlice";
 import { generateOTP } from "@/lib/utils";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [showOTPInput, setShowOTPInput] = useState(false);
   const [otp, setOTP] = useState("");
-  const [generatedOTP, setGeneratedOTP] = useState("");
+
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,52 +31,48 @@ export default function Login() {
       toast.error("Please enter your email address");
       return;
     }
-    
+
     setIsLoading(true);
-    
+
     try {
-      // Simulate API call to send OTP
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      // Generate a random OTP (in a real app, this would be done on the backend)
-      const newOTP = generateOTP();
-      setGeneratedOTP(newOTP);
-      
-      // Show success message with the OTP (in a real app, we wouldn't show this)
-      toast.success(`OTP sent to ${email}. For demo: ${newOTP}`);
-      
-      // Show OTP input field
+      const response = await authApi.sendOtp(email);
+      toast.success(`OTP sent to ${email}`);
       setShowOTPInput(true);
-    } catch (error) {
-      toast.error("Failed to send OTP. Please try again.");
+    } catch (error: any) {
+      toast.error(error.response.data.detail || "Failed to send OTP. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleVerifyOTP = async (e: React.FormEvent) => {
+    const formData = new FormData();
+    formData.append("username", email); // or 'email' if backend says so
+    formData.append("password", otp);
+
     e.preventDefault();
     if (!otp) {
       toast.error("Please enter the OTP");
       return;
     }
-    
     setIsLoading(true);
-    
+
     try {
-      // Simulate API call to verify OTP
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      // Check if OTP matches (in a real app, this would be done on the backend)
-      if (otp === generatedOTP) {
+      const response = await authApi.verifyOtp(formData);
+
+      if (response.data.access_token) {
+        // Store all auth data in Redux
+        dispatch(setAuthData(response.data));
+
         toast.success("Login successful!");
-        localStorage.setItem("bankLensAuth", "true");
         navigate("/dashboard");
       } else {
         toast.error("Invalid OTP. Please try again.");
       }
-    } catch (error) {
-      toast.error("Failed to verify OTP. Please try again.");
+    } catch (error: any) {
+      
+        toast.error(error.response.data.detail  || "Failed to verify OTP. Please try again.");
+      
     } finally {
       setIsLoading(false);
     }
@@ -85,28 +84,33 @@ export default function Login() {
       <div className="w-full md:w-1/2 bg-white flex flex-col justify-center p-8 md:p-12 lg:p-16">
         <div className="max-w-md mx-auto">
           <div className="mb-8 flex items-center">
-            <img src="/lovable-uploads/1feca82a-073f-4352-b4fb-c606f5f94bd6.png" alt="BankLens Logo" className="h-12 mr-3" />
+            <img
+              src="/lovable-uploads/1feca82a-073f-4352-b4fb-c606f5f94bd6.png"
+              alt="BankLens Logo"
+              className="h-12 mr-3"
+            />
             <h1 className="text-3xl font-bold text-gray-800">BankLens</h1>
           </div>
-          
+
           <h2 className="text-3xl md:text-4xl font-semibold text-gray-800 mb-6">
             Smart Banking Analytics for Modern Lenders
           </h2>
-          
+
           <p className="text-gray-600 mb-8">
-            Access comprehensive financial insights, customer monitoring, and risk assessment tools in one powerful platform.
+            Access comprehensive financial insights, customer monitoring, and
+            risk assessment tools in one powerful platform.
           </p>
-          
+
           <div className="w-full h-64 md:h-80 lg:h-96 bg-gray-50 rounded-lg flex items-center justify-center mb-8">
-            <img 
-              src="/lovable-uploads/6ff1f3c6-b698-492a-82c4-fde3982e8a07.png" 
-              alt="Banking Analytics Illustration" 
+            <img
+              src="/lovable-uploads/6ff1f3c6-b698-492a-82c4-fde3982e8a07.png"
+              alt="Banking Analytics Illustration"
               className="max-h-full max-w-full object-contain p-8"
             />
           </div>
         </div>
       </div>
-      
+
       {/* Right side login form */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-8 bg-gray-50">
         <div className="w-full max-w-md">
@@ -168,7 +172,9 @@ export default function Login() {
                         placeholder="Enter 6-digit OTP"
                         maxLength={6}
                         value={otp}
-                        onChange={(e) => setOTP(e.target.value.replace(/[^0-9]/g, ''))}
+                        onChange={(e) =>
+                          setOTP(e.target.value.replace(/[^0-9]/g, ""))
+                        }
                         className="text-center text-lg letter-spacing-wide bg-white"
                         required
                       />

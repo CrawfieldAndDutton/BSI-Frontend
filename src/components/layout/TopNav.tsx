@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
+import { logout } from "@/store/userSlice";
+import { useDispatch, UseDispatch } from "react-redux";
 
 interface TopNavProps {
   sidebarCollapsed: boolean;
@@ -20,9 +22,11 @@ interface TopNavProps {
 
 export function TopNav({ sidebarCollapsed, setSidebarCollapsed }: TopNavProps) {
   const navigate = useNavigate();
-  
+  const dispatch = useDispatch();
+
   const handleLogout = () => {
-    localStorage.removeItem("bankLensAuth");
+    dispatch(logout())
+    
     navigate("/login");
   };
 
