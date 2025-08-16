@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,11 +12,13 @@ import { Chart } from "@/components/dashboard/Chart";
 import {
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent
+  ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Bar, Line, BarChart, LineChart, Cell, PieChart, Pie } from "recharts";
+import { customerApi } from "@/apis/modules/customer";
 
 // Using the same mock data as CustomerProfile
+
 const incomeData = [
   { name: "Jan", value: 42000 },
   { name: "Feb", value: 42000 },
@@ -106,7 +107,14 @@ const fraudRiskData = [
   { amount: 50000, frequency: 0.1, risk: "high" },
 ];
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#9b87f5'];
+const COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#8884d8",
+  "#9b87f5",
+];
 
 export default function CustomerAnalysis() {
   const { id } = useParams<{ id: string }>();
@@ -115,33 +123,33 @@ export default function CustomerAnalysis() {
   return (
     <div className="p-4 space-y-6">
       <h2 className="text-2xl font-semibold">Customer Analysis</h2>
-      
+
       {/* Quick Overview Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <Card className="shadow-md">
           <CardContent className="p-4">
             <h3 className="text-sm font-medium mb-2">Income Trend</h3>
-            <ChartContainer 
-              className="h-[100px]" 
+            <ChartContainer
+              className="h-[100px]"
               config={{
-                income: { theme: { light: "#9b87f5", dark: "#9b87f5" } }
+                income: { theme: { light: "#9b87f5", dark: "#9b87f5" } },
               }}
             >
               <LineChart data={incomeData}>
-                <Line 
-                  type="monotone" 
-                  dataKey="value" 
+                <Line
+                  type="monotone"
+                  dataKey="value"
                   name="income"
-                  stroke="var(--color-income, #9b87f5)" 
+                  stroke="var(--color-income, #9b87f5)"
                   dot={false}
-                  strokeWidth={2} 
+                  strokeWidth={2}
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
               </LineChart>
             </ChartContainer>
           </CardContent>
         </Card>
-        
+
         <Card className="shadow-md">
           <CardContent className="p-4">
             <h3 className="text-sm font-medium mb-2">Spending Distribution</h3>
@@ -157,7 +165,10 @@ export default function CustomerAnalysis() {
                   dataKey="value"
                 >
                   {spendingData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
                 <ChartTooltip content={<ChartTooltipContent />} />
@@ -165,13 +176,16 @@ export default function CustomerAnalysis() {
             </ChartContainer>
           </CardContent>
         </Card>
-        
+
         <Card className="shadow-md">
           <CardContent className="p-4">
             <h3 className="text-sm font-medium mb-2">Credit Score</h3>
             <div className="flex items-center justify-center h-[100px]">
               <div className="relative w-32 h-32">
-                <svg viewBox="0 0 100 100" className="transform -rotate-90 w-full h-full">
+                <svg
+                  viewBox="0 0 100 100"
+                  className="transform -rotate-90 w-full h-full"
+                >
                   <circle
                     cx="50"
                     cy="50"
@@ -203,21 +217,21 @@ export default function CustomerAnalysis() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="shadow-md">
           <CardContent className="p-4">
             <h3 className="text-sm font-medium mb-2">Savings Growth</h3>
-            <ChartContainer 
-              className="h-[100px]" 
+            <ChartContainer
+              className="h-[100px]"
               config={{
-                savings: { theme: { light: "#00C49F", dark: "#00C49F" } }
+                savings: { theme: { light: "#00C49F", dark: "#00C49F" } },
               }}
             >
               <BarChart data={savingsData}>
-                <Bar 
-                  dataKey="value" 
+                <Bar
+                  dataKey="value"
                   name="savings"
-                  fill="var(--color-savings, #00C49F)" 
+                  fill="var(--color-savings, #00C49F)"
                   radius={[4, 4, 0, 0]}
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />

@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { formatCurrency, formatPercentage } from "@/lib/utils";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface FinancialMetrics {
   creditCards: number;
@@ -37,12 +37,16 @@ export function FinancialHealthOverview({
   scores,
   financialMetrics,
 }: FinancialHealthOverviewProps) {
+  const [overview, setOverview] = useState<any>();
+
+  // Set page title
   useEffect(() => {
     (async () => {
       const pathParts = window.location.pathname.split("/");
       const customerId = pathParts[pathParts.length - 1];
-      const response = await customerApi.customer_analysis(customerId);
-      console.log(response);
+      const response = await customerApi.customer_overview(customerId);
+      console.log(response.data);
+      setOverview(response.data);
     })();
   }, []);
 
@@ -60,14 +64,18 @@ export function FinancialHealthOverview({
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-navy-800">
-              {scores.creditScore}
+              {overview?.financial_health_overview?.Credit_Score?.value ||
+                "N/A"}
             </div>
             <CardDescription
               className={
-                scores.creditScore > 700 ? "text-green-600" : "text-amber-600"
+                overview?.financial_health_overview?.Credit_Score?.value > 700
+                  ? "text-green-600"
+                  : "text-amber-600"
               }
             >
-              {scores.creditScore > 700 ? "Excellent" : "Good"}
+              {overview?.financial_health_overview?.Credit_Score?.status ||
+                "N/A"}
             </CardDescription>
           </CardContent>
         </Card>
@@ -80,7 +88,9 @@ export function FinancialHealthOverview({
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-navy-800">
-              {formatPercentage(scores.incomeStability)}
+              {overview?.financial_health_overview?.Income_Stability?.value ||
+                "0"}
+              %
             </div>
             <CardDescription
               className={
@@ -89,7 +99,8 @@ export function FinancialHealthOverview({
                   : "text-amber-600"
               }
             >
-              {scores.incomeStability > 80 ? "Very Stable" : "Stable"}
+              {overview?.financial_health_overview?.Income_Stability?.status ||
+                "N/A"}
             </CardDescription>
           </CardContent>
         </Card>
@@ -102,14 +113,14 @@ export function FinancialHealthOverview({
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-navy-800">
-              {formatPercentage(scores.fraudRisk)}
+              {overview?.financial_health_overview?.Fraud_Risk?.value || "N/A"}%
             </div>
             <CardDescription
               className={
                 scores.fraudRisk < 20 ? "text-green-600" : "text-red-600"
               }
             >
-              {scores.fraudRisk < 20 ? "Low Risk" : "High Risk"}
+              {overview?.financial_health_overview?.Fraud_Risk?.status || "N/A"}
             </CardDescription>
           </CardContent>
         </Card>
@@ -122,9 +133,14 @@ export function FinancialHealthOverview({
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-navy-800">
-              {financialMetrics.creditCards}
+              {overview?.financial_health_overview?.Credit_Cards?.value ||
+                "N/A"}
             </div>
-            <CardDescription>Active Cards</CardDescription>
+            <CardDescription>
+              {" "}
+              {overview?.financial_health_overview?.Credit_Cards?.status ||
+                "N/A"}
+            </CardDescription>
           </CardContent>
         </Card>
 
@@ -136,9 +152,14 @@ export function FinancialHealthOverview({
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-navy-800">
-              {financialMetrics.bankAccounts}
+              {overview?.financial_health_overview?.Bank_Accounts?.value ||
+                "N/A"}
             </div>
-            <CardDescription>Consented</CardDescription>
+            <CardDescription>
+              {" "}
+              {overview?.financial_health_overview?.Bank_Accounts?.status ||
+                "N/A"}
+            </CardDescription>
           </CardContent>
         </Card>
 
@@ -150,9 +171,13 @@ export function FinancialHealthOverview({
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-navy-800">
-              {financialMetrics.riskGroup}
+              {overview?.financial_health_overview?.Risk_Assessment?.value ||
+                "N/A"}
             </div>
-            <CardDescription>Overall Risk</CardDescription>
+            <CardDescription>
+              {overview?.financial_health_overview?.Risk_Assessment?.status ||
+                "N/A"}
+            </CardDescription>
           </CardContent>
         </Card>
 
@@ -164,9 +189,13 @@ export function FinancialHealthOverview({
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-navy-800">
-              {financialMetrics.runningLoans}
+              {overview?.financial_health_overview?.Active_Loans?.value ||
+                "N/A"}
             </div>
-            <CardDescription>Running Loans</CardDescription>
+            <CardDescription>
+              {overview?.financial_health_overview?.Active_Loans?.status ||
+                "N/A"}
+            </CardDescription>
           </CardContent>
         </Card>
 
@@ -178,9 +207,13 @@ export function FinancialHealthOverview({
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-navy-800">
-              {formatPercentage(financialMetrics.loanCompletionPercentage)}
+              {overview?.financial_health_overview?.Loan_Progress?.value ||
+                "N/A"}
             </div>
-            <CardDescription>Completion</CardDescription>
+            <CardDescription>
+              {overview?.financial_health_overview?.Loan_Progress?.status ||
+                "N/A"}
+            </CardDescription>
           </CardContent>
         </Card>
 
@@ -192,9 +225,13 @@ export function FinancialHealthOverview({
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-navy-800">
-              {formatCurrency(financialMetrics.averageMonthlySavings)}
+              {overview?.financial_health_overview?.Monthly_Savings?.value ||
+                "N/A"}
             </div>
-            <CardDescription>Average</CardDescription>
+            <CardDescription>
+              {overview?.financial_health_overview?.Monthly_Savings?.status ||
+                "N/A"}
+            </CardDescription>
           </CardContent>
         </Card>
       </div>

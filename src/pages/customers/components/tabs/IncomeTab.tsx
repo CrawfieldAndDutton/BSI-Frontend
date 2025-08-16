@@ -1,23 +1,24 @@
-
 import { Chart } from "@/components/dashboard/Chart";
 import { ChartData } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
-import { 
-  BarChart, 
-  Bar, 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
+import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
   CartesianGrid,
-  Tooltip, 
+  Tooltip,
   ResponsiveContainer,
   AreaChart,
   Area,
   PieChart,
   Pie,
-  Cell
-} from 'recharts';
+  Cell,
+} from "recharts";
+import { useEffect, useState } from "react";
+import { customerApi } from "@/apis/modules/customer";
 
 interface IncomeTabProps {
   incomeData: ChartData[];
@@ -25,20 +26,37 @@ interface IncomeTabProps {
 
 export function IncomeTab({ incomeData }: IncomeTabProps) {
   // Enhanced data for charts
+
+  const [analysisData, setAnalysisData] = useState<any>([]);
+
   const salaryVsOtherData = [
     { name: "Salary", value: 45000 },
     { name: "Investments", value: 3500 },
     { name: "Rental", value: 8000 },
     { name: "Other", value: 2000 },
   ];
-  
-  const totalMonthlyIncome = salaryVsOtherData.reduce((sum, item) => sum + item.value, 0);
+
+  const totalMonthlyIncome = salaryVsOtherData.reduce(
+    (sum, item) => sum + item.value,
+    0
+  );
   const maxIncomeSource = salaryVsOtherData.reduce(
     (max, item) => (item.value > max.value ? item : max),
     salaryVsOtherData[0]
   );
-  
-  const COLORS = ['#9b87f5', '#7E69AB', '#E5DEFF', '#D3E4FD'];
+
+  const COLORS = ["#9b87f5", "#7E69AB", "#E5DEFF", "#D3E4FD"];
+
+  // Set page title
+  useEffect(() => {
+    (async () => {
+      const pathParts = window.location.pathname.split("/");
+      const customerId = pathParts[pathParts.length - 1];
+      const response = await customerApi.customer_analysis(customerId);
+      console.log(response.data.result);
+      setAnalysisData(response.data.result);
+    })();
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -47,12 +65,23 @@ export function IncomeTab({ incomeData }: IncomeTabProps) {
         <CardContent className="p-6">
           <h4 className="text-lg font-medium mb-4">Income Overview</h4>
           <div className="space-y-4">
-            <p className="text-sm">Total Monthly Income: ₹{totalMonthlyIncome.toLocaleString()}</p>
-            <p className="text-sm">Primary Income Source: {maxIncomeSource.name} (₹{maxIncomeSource.value.toLocaleString()})</p>
+            <p className="text-sm">
+              Total Monthly Income: ₹{totalMonthlyIncome.toLocaleString()}
+            </p>
+            <p className="text-sm">
+              Primary Income Source: {maxIncomeSource.name} (₹
+              {maxIncomeSource.value.toLocaleString()})
+            </p>
             <div className="flex flex-wrap gap-2 mt-3">
-              <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Stable Income</span>
-              <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Regular Deposits</span>
-              <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">Multiple Sources</span>
+              <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                Stable Income
+              </span>
+              <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                Regular Deposits
+              </span>
+              <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
+                Multiple Sources
+              </span>
             </div>
           </div>
         </CardContent>
@@ -63,11 +92,7 @@ export function IncomeTab({ incomeData }: IncomeTabProps) {
         <Card className="shadow-sm">
           <CardContent className="p-6">
             <h4 className="font-medium mb-4">Monthly Income Trend</h4>
-            <Chart 
-              data={incomeData} 
-              type="line" 
-              colors={['#9b87f5']} 
-            />
+            <Chart data={incomeData} type="line" colors={["#9b87f5"]} />
           </CardContent>
         </Card>
 
@@ -84,20 +109,28 @@ export function IncomeTab({ incomeData }: IncomeTabProps) {
                   outerRadius={80}
                   fill="#9b87f5"
                   dataKey="value"
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) =>
+                    `${name}: ${(percent * 100).toFixed(0)}%`
+                  }
                 >
                   {salaryVsOtherData.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
-                <Tooltip 
-                  formatter={(value) => [`₹${(value as number).toLocaleString()}`, '']}
-                  contentStyle={{ 
-                    backgroundColor: '#fff',
-                    borderRadius: '8px',
-                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                    border: '1px solid #E2E8F0'
-                  }} 
+                <Tooltip
+                  formatter={(value) => [
+                    `₹${(value as number).toLocaleString()}`,
+                    "",
+                  ]}
+                  contentStyle={{
+                    backgroundColor: "#fff",
+                    borderRadius: "8px",
+                    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+                    border: "1px solid #E2E8F0",
+                  }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -161,7 +194,9 @@ export function IncomeTab({ incomeData }: IncomeTabProps) {
             </div>
             <div className="flex items-start">
               <div className="h-2 w-2 rounded-full bg-green-500 mt-2 mr-2"></div>
-              <p>Secondary income sources contribute 23% of total monthly income</p>
+              <p>
+                Secondary income sources contribute 23% of total monthly income
+              </p>
             </div>
             <div className="flex items-start">
               <div className="h-2 w-2 rounded-full bg-yellow-500 mt-2 mr-2"></div>

@@ -56,4 +56,9 @@ export const customerApi = {
     httpClient.get<any>(`/dev/banklens/customer/${id}/monitoring/periodic`, {
       headers: { useAuth: true },
     }),
+
+  customer_overview: (id: string) =>
+    httpClient.get<any>(`/dev/banklens/customer/${id}/overview`, {
+      headers: { useAuth: true },
+    }),
 };

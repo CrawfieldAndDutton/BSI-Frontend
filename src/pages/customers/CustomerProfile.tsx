@@ -198,7 +198,7 @@ export default function CustomerProfile() {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [selectedCall, setSelectedCall] = useState("call1");
   const [activeAnalysisTab, setActiveAnalysisTab] = useState("income");
-  const [timeRange, setTimeRange] = useState("6M");
+  const [timeRange, setTimeRange] = useState("RECENT");
   const [showBankStatement, setShowBankStatement] = useState(false);
   const [showCreditReport, setShowCreditReport] = useState(false);
   const [customerDatas, setCustomerDatas] = useState<CustomerDatas>({
@@ -437,6 +437,15 @@ export default function CustomerProfile() {
                             <div className="flex items-center space-x-2">
                               <Button
                                 variant={
+                                  timeRange === "RECENT" ? "default" : "outline"
+                                }
+                                size="sm"
+                                onClick={() => setTimeRange("RECENT")}
+                              >
+                                Recent
+                              </Button>
+                              <Button
+                                variant={
                                   timeRange === "3M" ? "default" : "outline"
                                 }
                                 size="sm"
@@ -608,6 +617,15 @@ export default function CustomerProfile() {
                             <div className="flex items-center space-x-2">
                               <Button
                                 variant={
+                                  timeRange === "RECENT" ? "default" : "outline"
+                                }
+                                size="sm"
+                                onClick={() => setTimeRange("RECENT")}
+                              >
+                                Recent
+                              </Button>
+                              <Button
+                                variant={
                                   timeRange === "3M" ? "default" : "outline"
                                 }
                                 size="sm"
@@ -644,6 +662,15 @@ export default function CustomerProfile() {
                         <div className="mt-6">
                           <div className="flex justify-end mb-4">
                             <div className="flex items-center space-x-2">
+                              <Button
+                                variant={
+                                  timeRange === "RECENT" ? "default" : "outline"
+                                }
+                                size="sm"
+                                onClick={() => setTimeRange("RECENT")}
+                              >
+                                Recent
+                              </Button>
                               <Button
                                 variant={
                                   timeRange === "3M" ? "default" : "outline"
@@ -855,6 +882,15 @@ export default function CustomerProfile() {
                         <div className="mt-6">
                           <div className="flex justify-end mb-4">
                             <div className="flex items-center space-x-2">
+                              <Button
+                                variant={
+                                  timeRange === "RECENT" ? "default" : "outline"
+                                }
+                                size="sm"
+                                onClick={() => setTimeRange("RECENT")}
+                              >
+                                Recent
+                              </Button>
                               <Button
                                 variant={
                                   timeRange === "3M" ? "default" : "outline"
