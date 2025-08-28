@@ -241,14 +241,14 @@ const Settings = () => {
                         <FormItem>
                           <div className="flex justify-between items-center">
                             <FormLabel>Mobile Number</FormLabel>
-                            <Button 
+                            {/* <Button 
                               type="button" 
                               variant="outline" 
                               size="sm" 
                               onClick={handleResetMobile}
                             >
                               Reset
-                            </Button>
+                            </Button> */}
                           </div>
                           <FormControl>
                             <Input {...field} />
@@ -268,14 +268,14 @@ const Settings = () => {
                         <FormItem>
                           <div className="flex justify-between items-center">
                             <FormLabel>Email ID</FormLabel>
-                            <Button 
+                            {/* <Button 
                               type="button" 
                               variant="outline" 
                               size="sm" 
                               onClick={handleResetEmail}
                             >
                               Reset
-                            </Button>
+                            </Button> */}
                           </div>
                           <FormControl>
                             <Input {...field} />
@@ -401,7 +401,6 @@ const Settings = () => {
                   <div className="space-y-6">
                     <div className="space-y-4">
                       <h3 className="text-lg font-medium">AA FIU Configuration</h3>
-                      
                       <FormField
                         control={integrationForm.control}
                         name="aaFiuConfig"

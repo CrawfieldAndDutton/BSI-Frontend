@@ -1,4 +1,3 @@
-
 import { Bell, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +12,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { logout } from "@/store/userSlice";
-import { useDispatch, UseDispatch } from "react-redux";
+import { authApi } from "@/apis/modules/auth";
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";
 
 interface TopNavProps {
   sidebarCollapsed: boolean;
@@ -24,10 +25,17 @@ export function TopNav({ sidebarCollapsed, setSidebarCollapsed }: TopNavProps) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    dispatch(logout())
-    
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await authApi.logout({
+        refresh_token: localStorage.getItem("refreshToken"),
+      });
+      dispatch(logout());
+      toast.success("Log out Successful");
+      navigate("/login");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.detail || "Failed to Logout");
+    }
   };
 
   return (
@@ -70,8 +78,10 @@ export function TopNav({ sidebarCollapsed, setSidebarCollapsed }: TopNavProps) {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem onClick={() => navigate("/settings")}>Profile</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/settings")}>Settings</DropdownMenuItem>
+                {/* <DropdownMenuItem onClick={() => navigate("/settings")}>Profile</DropdownMenuItem> */}
+                <DropdownMenuItem onClick={() => navigate("/settings")}>
+                  Settings
+                </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>

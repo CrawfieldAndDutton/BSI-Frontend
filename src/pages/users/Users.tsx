@@ -196,6 +196,7 @@ export default function Users() {
       // Optionally refresh users here
     } catch (error: any) {
       toast.error(error?.response?.data?.detail  ||"Failed to create user");
+      
     }
   };
 
