@@ -1,30 +1,43 @@
-
 import { Chart } from "@/components/dashboard/Chart";
 import { ChartData } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
-import { 
-  BarChart, 
-  Bar, 
+import {
+  BarChart,
+  Bar,
   PieChart,
   Pie,
   Cell,
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
   CartesianGrid,
-  Tooltip, 
+  Tooltip,
   Legend,
-  ResponsiveContainer 
-} from 'recharts';
+  ResponsiveContainer,
+} from "recharts";
+import { useEffect, useState } from "react";
+import { customerApi } from "@/apis/modules/customer";
 
 interface SpendingTabProps {
   spendingData: ChartData[];
 }
 
 export function SpendingTab({ spendingData }: SpendingTabProps) {
-  const COLORS = ['#9b87f5', '#7E69AB', '#E5DEFF', '#D3E4FD', '#8E9196'];
-  
+  const COLORS = ["#9b87f5", "#7E69AB", "#E5DEFF", "#D3E4FD", "#8E9196"];
+  const [analysisData, setAnalysisData] = useState<any>({});
+
+  // Set page title
+  useEffect(() => {
+    (async () => {
+      const pathParts = window.location.pathname.split("/");
+      const customerId = pathParts[pathParts.length - 1];
+      const response = await customerApi.customer_analysis(customerId);
+      console.log(response["data"]["result"]);
+      setAnalysisData(response["data"]["result"]);
+    })();
+  }, []);
+
   // Additional data for spending trends
   const spendingTrendData = [
     { name: "Jan", amount: 35500 },
@@ -34,7 +47,7 @@ export function SpendingTab({ spendingData }: SpendingTabProps) {
     { name: "May", amount: 39100 },
     { name: "Jun", amount: 38700 },
   ];
-  
+
   const essentialVsNonEssentialData = [
     { name: "Jan", essential: 28000, nonEssential: 7500 },
     { name: "Feb", essential: 28000, nonEssential: 8200 },
@@ -66,9 +79,15 @@ export function SpendingTab({ spendingData }: SpendingTabProps) {
             <p className="text-sm">Average Monthly Spending: ₹37,300</p>
             <p className="text-sm">Spending to Income Ratio: 64%</p>
             <div className="flex flex-wrap gap-2 mt-3">
-              <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Healthy Spending</span>
-              <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Entertainment Above Average</span>
-              <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Stable Fixed Expenses</span>
+              <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                Healthy Spending
+              </span>
+              <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
+                Entertainment Above Average
+              </span>
+              <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                Stable Fixed Expenses
+              </span>
             </div>
           </div>
         </CardContent>
@@ -89,19 +108,24 @@ export function SpendingTab({ spendingData }: SpendingTabProps) {
                   outerRadius={100}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) =>
+                    `${name}: ${(percent * 100).toFixed(0)}%`
+                  }
                 >
                   {spendingData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#fff',
-                    borderRadius: '8px',
-                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                    border: '1px solid #E2E8F0'
-                  }} 
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#fff",
+                    borderRadius: "8px",
+                    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+                    border: "1px solid #E2E8F0",
+                  }}
                 />
                 <Legend />
               </PieChart>
@@ -111,26 +135,45 @@ export function SpendingTab({ spendingData }: SpendingTabProps) {
 
         <Card className="shadow-sm">
           <CardContent className="p-6">
-            <h4 className="font-medium mb-4">Essential vs Non-Essential Expenses</h4>
+            <h4 className="font-medium mb-4">
+              Essential vs Non-Essential Expenses
+            </h4>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart 
+              <BarChart
                 data={essentialVsNonEssentialData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f1f1" />
-                <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#8E9196' }} />
-                <YAxis tick={{ fontSize: 12, fill: '#8E9196' }} />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#fff',
-                    borderRadius: '8px',
-                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                    border: '1px solid #E2E8F0'
-                  }} 
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  stroke="#f1f1f1"
+                />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fontSize: 12, fill: "#8E9196" }}
+                />
+                <YAxis tick={{ fontSize: 12, fill: "#8E9196" }} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#fff",
+                    borderRadius: "8px",
+                    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+                    border: "1px solid #E2E8F0",
+                  }}
                 />
                 <Legend />
-                <Bar dataKey="essential" stackId="a" fill="#9b87f5" name="Essential" />
-                <Bar dataKey="nonEssential" stackId="a" fill="#E5DEFF" name="Non-Essential" />
+                <Bar
+                  dataKey="essential"
+                  stackId="a"
+                  fill="#9b87f5"
+                  name="Essential"
+                />
+                <Bar
+                  dataKey="nonEssential"
+                  stackId="a"
+                  fill="#E5DEFF"
+                  name="Non-Essential"
+                />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -143,10 +186,10 @@ export function SpendingTab({ spendingData }: SpendingTabProps) {
           <Card className="shadow-sm h-full">
             <CardContent className="p-6">
               <h4 className="font-medium mb-4">Monthly Spending Trend</h4>
-              <Chart 
-                data={spendingTrendData} 
-                type="line" 
-                dataKeys={["amount"]} 
+              <Chart
+                data={spendingTrendData}
+                type="line"
+                dataKeys={["amount"]}
                 colors={["#7E69AB"]}
               />
             </CardContent>
@@ -202,10 +245,22 @@ export function SpendingTab({ spendingData }: SpendingTabProps) {
                 {categorySpendingData.map((item, index) => (
                   <tr key={index} className="border-b">
                     <td className="p-3">{item.category}</td>
-                    <td className="p-3">{index < 5 ? 'Essential' : 'Non-Essential'}</td>
-                    <td className="p-3 text-right">₹{item.amount.toLocaleString()}</td>
+                    <td className="p-3">
+                      {index < 5 ? "Essential" : "Non-Essential"}
+                    </td>
                     <td className="p-3 text-right">
-                      {(item.amount / categorySpendingData.reduce((acc, curr) => acc + curr.amount, 0) * 100).toFixed(1)}%
+                      ₹{item.amount.toLocaleString()}
+                    </td>
+                    <td className="p-3 text-right">
+                      {(
+                        (item.amount /
+                          categorySpendingData.reduce(
+                            (acc, curr) => acc + curr.amount,
+                            0
+                          )) *
+                        100
+                      ).toFixed(1)}
+                      %
                     </td>
                   </tr>
                 ))}

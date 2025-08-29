@@ -433,178 +433,201 @@ export default function CustomerProfile() {
 
                       <TabsContent value="income">
                         <div className="mt-6">
-                          <div className="flex justify-end mb-4">
-                            <div className="flex items-center space-x-2">
-                              <Button
-                                variant={
-                                  timeRange === "RECENT" ? "default" : "outline"
-                                }
-                                size="sm"
-                                onClick={() => setTimeRange("RECENT")}
-                              >
-                                Recent
-                              </Button>
-                              <Button
-                                variant={
-                                  timeRange === "3M" ? "default" : "outline"
-                                }
-                                size="sm"
-                                onClick={() => setTimeRange("3M")}
-                              >
-                                3M
-                              </Button>
-                              <Button
-                                variant={
-                                  timeRange === "6M" ? "default" : "outline"
-                                }
-                                size="sm"
-                                onClick={() => setTimeRange("6M")}
-                              >
-                                6M
-                              </Button>
-                              <Button
-                                variant={
-                                  timeRange === "12M" ? "default" : "outline"
-                                }
-                                size="sm"
-                                onClick={() => setTimeRange("12M")}
-                              >
-                                12M
-                              </Button>
-                            </div>
-                          </div>
-
                           {showBankStatement ? (
-                            <Card>
-                              <CardHeader>
-                                <div className="flex justify-between items-center">
-                                  <CardTitle>Bank Statement</CardTitle>
+                            <>
+                              <div className="flex justify-end mb-4">
+                                <div className="flex items-center space-x-2">
                                   <Button
+                                    variant={
+                                      timeRange === "RECENT"
+                                        ? "default"
+                                        : "outline"
+                                    }
                                     size="sm"
-                                    variant="ghost"
-                                    onClick={() => setShowBankStatement(false)}
+                                    onClick={() => setTimeRange("RECENT")}
                                   >
-                                    Close
+                                    Recent
+                                  </Button>
+                                  <Button
+                                    variant={
+                                      timeRange === "3M" ? "default" : "outline"
+                                    }
+                                    size="sm"
+                                    onClick={() => setTimeRange("3M")}
+                                  >
+                                    3M
+                                  </Button>
+                                  <Button
+                                    variant={
+                                      timeRange === "6M" ? "default" : "outline"
+                                    }
+                                    size="sm"
+                                    onClick={() => setTimeRange("6M")}
+                                  >
+                                    6M
+                                  </Button>
+                                  <Button
+                                    variant={
+                                      timeRange === "12M"
+                                        ? "default"
+                                        : "outline"
+                                    }
+                                    size="sm"
+                                    onClick={() => setTimeRange("12M")}
+                                  >
+                                    12M
                                   </Button>
                                 </div>
-                              </CardHeader>
-                              <CardContent>
-                                <div className="space-y-6">
-                                  <div className="p-4 bg-gray-50 rounded-md">
-                                    <h3 className="text-lg font-medium mb-2">
-                                      Bank Statement Summary
-                                    </h3>
-                                    <p>Account Number: XXXX-XXXX-1234</p>
-                                    <p>Bank Name: HDFC Bank</p>
-                                    <p>Statement Period: Jan 2023 - Jun 2023</p>
-                                    <p>Opening Balance: ₹125,000</p>
-                                    <p>Closing Balance: ₹178,500</p>
+                              </div>
+                              <Card>
+                                <CardHeader>
+                                  <div className="flex justify-between items-center">
+                                    <CardTitle>Bank Statement</CardTitle>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() =>
+                                        setShowBankStatement(false)
+                                      }
+                                    >
+                                      Close
+                                    </Button>
                                   </div>
+                                </CardHeader>
+                                <CardContent>
+                                  <div className="space-y-6">
+                                    <div className="p-4 bg-gray-50 rounded-md">
+                                      <h3 className="text-lg font-medium mb-2">
+                                        Bank Statement Summary
+                                      </h3>
+                                      <p>Account Number: XXXX-XXXX-1234</p>
+                                      <p>Bank Name: HDFC Bank</p>
+                                      <p>
+                                        Statement Period: Jan 2023 - Jun 2023
+                                      </p>
+                                      <p>Opening Balance: ₹125,000</p>
+                                      <p>Closing Balance: ₹178,500</p>
+                                    </div>
 
-                                  <div className="overflow-x-auto">
-                                    <table className="w-full">
-                                      <thead>
-                                        <tr className="bg-gray-100">
-                                          <th className="p-2 text-left">
-                                            Date
-                                          </th>
-                                          <th className="p-2 text-left">
-                                            Description
-                                          </th>
-                                          <th className="p-2 text-right">
-                                            Credit
-                                          </th>
-                                          <th className="p-2 text-right">
-                                            Debit
-                                          </th>
-                                          <th className="p-2 text-right">
-                                            Balance
-                                          </th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        <tr className="border-b">
-                                          <td className="p-2">25/06/2023</td>
-                                          <td className="p-2">
-                                            Salary Credit - ACME Corp
-                                          </td>
-                                          <td className="p-2 text-right text-green-600">
-                                            ₹45,000
-                                          </td>
-                                          <td className="p-2 text-right">-</td>
-                                          <td className="p-2 text-right">
-                                            ₹178,500
-                                          </td>
-                                        </tr>
-                                        <tr className="border-b">
-                                          <td className="p-2">20/06/2023</td>
-                                          <td className="p-2">
-                                            EMI - Car Loan
-                                          </td>
-                                          <td className="p-2 text-right">-</td>
-                                          <td className="p-2 text-right text-red-600">
-                                            ₹12,500
-                                          </td>
-                                          <td className="p-2 text-right">
-                                            ₹133,500
-                                          </td>
-                                        </tr>
-                                        <tr className="border-b">
-                                          <td className="p-2">15/06/2023</td>
-                                          <td className="p-2">
-                                            Credit Card Payment
-                                          </td>
-                                          <td className="p-2 text-right">-</td>
-                                          <td className="p-2 text-right text-red-600">
-                                            ₹15,000
-                                          </td>
-                                          <td className="p-2 text-right">
-                                            ₹146,000
-                                          </td>
-                                        </tr>
-                                        <tr className="border-b">
-                                          <td className="p-2">10/06/2023</td>
-                                          <td className="p-2">
-                                            Grocery Shopping
-                                          </td>
-                                          <td className="p-2 text-right">-</td>
-                                          <td className="p-2 text-right text-red-600">
-                                            ₹4,200
-                                          </td>
-                                          <td className="p-2 text-right">
-                                            ₹161,000
-                                          </td>
-                                        </tr>
-                                        <tr className="border-b">
-                                          <td className="p-2">05/06/2023</td>
-                                          <td className="p-2">Utility Bills</td>
-                                          <td className="p-2 text-right">-</td>
-                                          <td className="p-2 text-right text-red-600">
-                                            ₹3,800
-                                          </td>
-                                          <td className="p-2 text-right">
-                                            ₹165,200
-                                          </td>
-                                        </tr>
-                                        <tr className="border-b">
-                                          <td className="p-2">25/05/2023</td>
-                                          <td className="p-2">
-                                            Salary Credit - ACME Corp
-                                          </td>
-                                          <td className="p-2 text-right text-green-600">
-                                            ₹45,000
-                                          </td>
-                                          <td className="p-2 text-right">-</td>
-                                          <td className="p-2 text-right">
-                                            ₹169,000
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
+                                    <div className="overflow-x-auto">
+                                      <table className="w-full">
+                                        <thead>
+                                          <tr className="bg-gray-100">
+                                            <th className="p-2 text-left">
+                                              Date
+                                            </th>
+                                            <th className="p-2 text-left">
+                                              Description
+                                            </th>
+                                            <th className="p-2 text-right">
+                                              Credit
+                                            </th>
+                                            <th className="p-2 text-right">
+                                              Debit
+                                            </th>
+                                            <th className="p-2 text-right">
+                                              Balance
+                                            </th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr className="border-b">
+                                            <td className="p-2">25/06/2023</td>
+                                            <td className="p-2">
+                                              Salary Credit - ACME Corp
+                                            </td>
+                                            <td className="p-2 text-right text-green-600">
+                                              ₹45,000
+                                            </td>
+                                            <td className="p-2 text-right">
+                                              -
+                                            </td>
+                                            <td className="p-2 text-right">
+                                              ₹178,500
+                                            </td>
+                                          </tr>
+                                          <tr className="border-b">
+                                            <td className="p-2">20/06/2023</td>
+                                            <td className="p-2">
+                                              EMI - Car Loan
+                                            </td>
+                                            <td className="p-2 text-right">
+                                              -
+                                            </td>
+                                            <td className="p-2 text-right text-red-600">
+                                              ₹12,500
+                                            </td>
+                                            <td className="p-2 text-right">
+                                              ₹133,500
+                                            </td>
+                                          </tr>
+                                          <tr className="border-b">
+                                            <td className="p-2">15/06/2023</td>
+                                            <td className="p-2">
+                                              Credit Card Payment
+                                            </td>
+                                            <td className="p-2 text-right">
+                                              -
+                                            </td>
+                                            <td className="p-2 text-right text-red-600">
+                                              ₹15,000
+                                            </td>
+                                            <td className="p-2 text-right">
+                                              ₹146,000
+                                            </td>
+                                          </tr>
+                                          <tr className="border-b">
+                                            <td className="p-2">10/06/2023</td>
+                                            <td className="p-2">
+                                              Grocery Shopping
+                                            </td>
+                                            <td className="p-2 text-right">
+                                              -
+                                            </td>
+                                            <td className="p-2 text-right text-red-600">
+                                              ₹4,200
+                                            </td>
+                                            <td className="p-2 text-right">
+                                              ₹161,000
+                                            </td>
+                                          </tr>
+                                          <tr className="border-b">
+                                            <td className="p-2">05/06/2023</td>
+                                            <td className="p-2">
+                                              Utility Bills
+                                            </td>
+                                            <td className="p-2 text-right">
+                                              -
+                                            </td>
+                                            <td className="p-2 text-right text-red-600">
+                                              ₹3,800
+                                            </td>
+                                            <td className="p-2 text-right">
+                                              ₹165,200
+                                            </td>
+                                          </tr>
+                                          <tr className="border-b">
+                                            <td className="p-2">25/05/2023</td>
+                                            <td className="p-2">
+                                              Salary Credit - ACME Corp
+                                            </td>
+                                            <td className="p-2 text-right text-green-600">
+                                              ₹45,000
+                                            </td>
+                                            <td className="p-2 text-right">
+                                              -
+                                            </td>
+                                            <td className="p-2 text-right">
+                                              ₹169,000
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
                                   </div>
-                                </div>
-                              </CardContent>
-                            </Card>
+                                </CardContent>
+                              </Card>
+                            </>
                           ) : (
                             <IncomeTab incomeData={incomeData} />
                           )}

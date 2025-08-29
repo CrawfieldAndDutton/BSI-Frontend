@@ -28,7 +28,7 @@ export const authApi = {
     }),
 
   refresh: (refreshToken: string) =>
-    httpClient.post<any>("/dev/banklens/auth/login/verify_otp", refreshToken, {
-      headers: { useRefreshToken: true },
+    httpClient.post<any>("/dev/banklens/auth/refresh", refreshToken, {
+      headers: { useAuth: true },
     }),
 };
