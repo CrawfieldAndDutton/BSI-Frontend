@@ -63,13 +63,13 @@ export function IncomeTab({ incomeData }: IncomeTabProps) {
   useEffect(() => {
     let dataBlock: any;
     if (timeRange === "RECENT") {
-      dataBlock = customerAnalysisFetch["recent period"];
+      dataBlock = customerAnalysisFetch["customerData"]["recent period"];
     } else if (timeRange === "3M") {
-      dataBlock = customerAnalysisFetch["3 months prior"];
+      dataBlock = customerAnalysisFetch["customerData"]["3 months prior"];
     } else if (timeRange === "6M") {
-      dataBlock = customerAnalysisFetch["6 months prior"];
+      dataBlock = customerAnalysisFetch["customerData"]["6 months prior"];
     } else if (timeRange === "12M") {
-      dataBlock = customerAnalysisFetch["12 months prior"];
+      dataBlock = customerAnalysisFetch["customerData"]["12 months prior"];
     }
 
     // Use optional chaining (?.) to avoid crashes
