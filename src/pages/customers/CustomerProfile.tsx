@@ -25,6 +25,8 @@ import { SpendingTab } from "./components/tabs/SpendingTab";
 import { CreditTab } from "./components/tabs/CreditTab";
 import { SavingsTab } from "./components/tabs/SavingsTab";
 import { customerApi } from "@/apis/modules/customer";
+import { useDispatch } from "react-redux";
+import { setCustomerData } from "@/store/customerSlice";
 
 // Sample data for the customer
 const customerData = {
@@ -201,6 +203,7 @@ export default function CustomerProfile() {
   const [timeRange, setTimeRange] = useState("RECENT");
   const [showBankStatement, setShowBankStatement] = useState(false);
   const [showCreditReport, setShowCreditReport] = useState(false);
+  const dispatch = useDispatch();
   const [customerDatas, setCustomerDatas] = useState<CustomerDatas>({
     created_at: "",
     customer_id: "",
@@ -224,6 +227,8 @@ export default function CustomerProfile() {
       const customerId = pathParts[pathParts.length - 1];
       const response = await customerApi.customer_fetch(customerId);
       console.log(response.data);
+      const response2 = await customerApi.customer_analysis(customerId);
+      dispatch(setCustomerData(response2["data"]["result"]));
       setCustomerDatas(response.data);
       document.title = `${response.data.name} | Customer Profile`;
     })();

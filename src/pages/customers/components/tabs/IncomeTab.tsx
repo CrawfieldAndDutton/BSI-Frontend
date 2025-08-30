@@ -20,6 +20,7 @@ import {
 } from "recharts";
 import { useEffect, useState } from "react";
 import { customerApi } from "@/apis/modules/customer";
+import { useSelector } from "react-redux";
 
 interface IncomeTabProps {
   incomeData: ChartData[];
@@ -27,6 +28,7 @@ interface IncomeTabProps {
 
 export function IncomeTab({ incomeData }: IncomeTabProps) {
   // Enhanced data for charts
+  const customerAnalysisFetch = useSelector((state: any) => state.customer);
   const [timeRange, setTimeRange] = useState("RECENT");
   const [overviewIncome, setOverviewIncome] = useState({
     totalMonthlyIncome: "",
@@ -39,11 +41,6 @@ export function IncomeTab({ incomeData }: IncomeTabProps) {
     frequency: "",
     amount: "",
   });
-
-  const [monthlyIncomeTrend, setMonthlyIncomeTrend] = useState<any>({});
-
-  const [analysisData, setAnalysisData] = useState<any>({});
-  const [salaryVsOtherDatas, setSalaryVsOtherDatas] = useState<any>({});
 
   const salaryVsOtherData = [
     { name: "Salary", value: 45000 },
@@ -63,29 +60,16 @@ export function IncomeTab({ incomeData }: IncomeTabProps) {
 
   const COLORS = ["#9b87f5", "#7E69AB", "#E5DEFF", "#D3E4FD"];
 
-  // Set page title
   useEffect(() => {
-    (async () => {
-      const pathParts = window.location.pathname.split("/");
-      const customerId = pathParts[pathParts.length - 1];
-      const response = await customerApi.customer_analysis(customerId);
-      console.log(response["data"]["result"]);
-      setAnalysisData(response["data"]["result"]);
-    })();
-  }, []);
-
-  useEffect(() => {
-    if (!analysisData || Object.keys(analysisData).length === 0) return;
-
     let dataBlock: any;
     if (timeRange === "RECENT") {
-      dataBlock = analysisData["recent period"];
+      dataBlock = customerAnalysisFetch["recent period"];
     } else if (timeRange === "3M") {
-      dataBlock = analysisData["3 months prior"];
+      dataBlock = customerAnalysisFetch["3 months prior"];
     } else if (timeRange === "6M") {
-      dataBlock = analysisData["6 months prior"];
+      dataBlock = customerAnalysisFetch["6 months prior"];
     } else if (timeRange === "12M") {
-      dataBlock = analysisData["12 months prior"];
+      dataBlock = customerAnalysisFetch["12 months prior"];
     }
 
     // Use optional chaining (?.) to avoid crashes
@@ -103,7 +87,7 @@ export function IncomeTab({ incomeData }: IncomeTabProps) {
       frequency: incomeSourceData?.["frequency"] || "N/A",
       amount: incomeSourceData?.["amount"] || "N/A",
     });
-  }, [timeRange, analysisData]);
+  }, [timeRange, customerAnalysisFetch]);
 
   return (
     <>
